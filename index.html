@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今年普渡，你選哪一籃？｜掃了再買</title>
+<meta property="og:title" content="今年普渡，你選哪一籃？">
+<meta property="og:description" content="供桌上三籃大禮包，都蓋著紅布。掀開來看看——哪一籃，最對得起好兄弟。掃了再買 × 透明足跡。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gcaa-org-tw.github.io/pudu2026/">
+<meta property="og:image" content="https://gcaa-org-tw.github.io/pudu2026/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#241811; --panel:#2B1D16; --card:#33241A; --line:#4A3625;
+  --red:#B3282D; --red-deep:#8E1F23; --red-bright:#D0433F;
+  --bamboo:#C29A5B; --bamboo-dark:#8F6D3A;
+  --gold:#D8A93D; --ink:#F3E9D8; --muted:#C9B694;
+  --water:#4E94EC; --air:#C08128;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--night); color:var(--ink);
+  font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  line-height:1.75; font-size:16px;
+}
+.stage{max-width:760px;margin:0 auto;padding:0 20px 48px;position:relative;min-height:100svh}
+.stage::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(420px 300px at 18% 6%, rgba(216,110,60,.16), transparent 70%),
+    radial-gradient(420px 300px at 84% 10%, rgba(216,110,60,.13), transparent 70%);
+}
+.screen{position:relative;z-index:1;display:none;padding-top:32px}
+.screen.on{display:block}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+a{color:var(--gold)}
+
+.eyebrow{font-size:13px;letter-spacing:.35em;color:var(--muted);text-transform:none}
+.btn{
+  display:inline-block;border:1px solid var(--gold);background:transparent;color:var(--gold);
+  padding:10px 28px;font-size:17px;letter-spacing:.25em;text-indent:.25em;border-radius:2px;
+  transition:background .25s,color .25s;
+}
+.btn:hover{background:var(--gold);color:var(--night)}
+.btn.primary{background:var(--red);border-color:var(--red-bright);color:var(--ink)}
+.btn.primary:hover{background:var(--red-bright)}
+.btn.quiet{border-color:var(--line);color:var(--muted);letter-spacing:.1em;text-indent:.1em;font-size:15px}
+.btn.quiet:hover{background:var(--card);color:var(--ink)}
+
+.cover{min-height:92svh;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center}
+.cover.on{display:flex}
+.cover-title{
+  writing-mode:vertical-rl;font-weight:900;font-size:clamp(40px,9vw,64px);
+  letter-spacing:.18em;line-height:1.35;height:auto;max-height:60svh;
+  text-shadow:0 2px 18px rgba(216,169,61,.18);
+}
+.cover-title em{font-style:normal;color:var(--red-bright)}
+.seal{
+  border:3px solid var(--red);color:var(--red-bright);padding:6px 8px;
+  writing-mode:vertical-rl;font-weight:900;font-size:15px;letter-spacing:.3em;border-radius:3px;
+  opacity:.95
+}
+.cover p{max-width:34em;color:var(--muted)}
+
+.altar-head{text-align:center;margin-bottom:6px}
+.altar-head h2{font-weight:900;font-size:24px;letter-spacing:.2em}
+.altar-head p{color:var(--muted);font-size:15px;margin-top:6px}
+.incense{display:flex;justify-content:center;height:74px;position:relative;margin-top:4px}
+.smoke{position:absolute;bottom:14px;width:2px;height:52px;border-radius:2px;
+  background:linear-gradient(to top, rgba(243,233,216,.4), transparent);
+  animation:sway 6s ease-in-out infinite;transform-origin:bottom center}
+.smoke:nth-child(2){animation-delay:-3s;height:42px;opacity:.7;margin-left:26px}
+.pot{position:absolute;bottom:0;width:64px;height:18px;border-radius:0 0 14px 14px;background:#6E4A28;border-top:3px solid var(--gold)}
+.pot::before,.pot::after{content:"";position:absolute;top:-12px;width:3px;height:13px;background:#B0512F;left:24px}
+.pot::after{left:37px}
+@keyframes sway{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(5deg) translateY(-4px)}}
+
+.baskets{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:8px 0 2px}
+.basket{
+  background:transparent;border:none;color:inherit;text-align:center;padding:6px 2px 10px;border-radius:8px;
+  transition:transform .3s;
+}
+.basket:hover{transform:translateY(-4px)}
+.basket svg{width:100%;height:auto;display:block}
+.basket .cloth-g{transition:transform .5s ease, opacity .5s ease;transform-origin:80% 20%}
+.basket.opened .cloth-g{transform:translate(14%,-30%) rotate(14deg);opacity:0}
+.basket .peek{opacity:0;transition:opacity .4s .15s}
+.basket.opened .peek{opacity:1}
+.basket-state{font-size:13px;color:var(--gold);min-height:1.6em;position:relative;z-index:2}
+.baskets{position:relative;z-index:1}
+.altar-table{height:34px;border-radius:3px;background:linear-gradient(#7A4E2D,#5C3A20);border-top:2px solid #96633A;margin-top:-34px;position:relative;z-index:0}
+.altar-legs{display:flex;justify-content:space-between;padding:0 9%}
+.altar-legs i{width:14px;height:34px;background:#4E311B;border-radius:0 0 3px 3px}
+.altar-foot{text-align:center;margin-top:22px;min-height:3em}
+.altar-foot .hint{color:var(--muted);font-size:14px;margin-top:10px}
+
+.panel{max-width:640px;margin:0 auto}
+.panel-head{text-align:center;margin-bottom:18px}
+.panel-head .eyebrow{display:block;margin-bottom:4px}
+.panel-head h2{font-weight:900;font-size:26px;letter-spacing:.16em}
+.panel-head p{color:var(--muted);font-size:15px}
+.item{
+  background:var(--card);border:1px solid var(--line);border-radius:6px;
+  padding:14px 16px;margin-bottom:10px;
+}
+.item-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.item-name{font-weight:600;font-size:17px}
+.item-maker{color:var(--muted);font-size:13.5px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);
+  border:1px solid var(--line);border-radius:99px;padding:1px 10px}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.chip.water i{background:var(--water)} .chip.air i{background:var(--air)}
+.chip.zero{color:var(--muted)}
+.item-stat{font-size:14.5px;color:var(--ink)}
+.item-stat b{font-size:16px}
+.item-fact{font-size:14px;color:var(--muted);border-top:1px dashed var(--line);margin-top:8px;padding-top:8px}
+.basket-sum{
+  border:1px solid var(--gold);border-radius:6px;padding:12px 16px;margin:14px 0 4px;
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline
+}
+.basket-sum b{font-size:20px;font-weight:900}
+.basket-sum span{color:var(--muted);font-size:14px}
+.panel-actions{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.confirm{
+  border:1px solid var(--line);background:var(--panel);border-radius:6px;
+  padding:14px 16px;margin-top:16px;text-align:center;display:none
+}
+.confirm.on{display:block}
+.confirm p{font-size:15px;margin-bottom:10px}
+.confirm .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.verdict{text-align:center;margin-bottom:22px}
+.verdict .eyebrow{display:block;margin-bottom:8px}
+.verdict h2{font-weight:900;font-size:clamp(26px,6vw,34px);letter-spacing:.1em;line-height:1.5}
+.verdict p{max-width:32em;margin:10px auto 0;color:var(--muted)}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 18px 8px;margin:0 auto 6px;max-width:640px}
+.chart h3{font-size:15px;font-weight:600;letter-spacing:.1em;margin-bottom:2px}
+.chart .sub{font-size:13px;color:var(--muted);margin-bottom:12px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-bottom:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.row-label{font-size:14.5px;display:flex;justify-content:space-between;align-items:baseline}
+.row-label b{font-weight:600}
+.row-label span{color:var(--muted);font-size:13px}
+.bar-track{height:20px;margin:5px 0 14px;display:flex;align-items:center;gap:2px}
+.seg{height:14px;flex-shrink:0}
+.seg.water{background:var(--water)} .seg.air{background:var(--air)}
+.seg.first{border-radius:4px 0 0 4px}.seg.last{border-radius:0 4px 4px 0}
+.seg.only{border-radius:4px}
+.bar-val{font-size:13px;color:var(--ink);margin-left:6px;white-space:nowrap}
+.zero-note{font-size:13px;color:var(--muted)}
+details.tbl{max-width:640px;margin:0 auto;font-size:13px;color:var(--muted)}
+details.tbl summary{cursor:pointer;padding:6px 0}
+details.tbl table{width:100%;border-collapse:collapse;margin-top:4px}
+details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-align:left}
+.cta{
+  text-align:center;border:1px solid var(--gold);border-radius:6px;max-width:640px;
+  margin:26px auto 0;padding:22px 18px
+}
+.cta h3{font-weight:900;font-size:20px;letter-spacing:.14em;margin-bottom:6px}
+.cta p{color:var(--muted);font-size:15px;margin-bottom:14px}
+.cta .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cta .btn{letter-spacing:.08em;text-indent:.08em}
+.foot{max-width:640px;margin:26px auto 0;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.replay{text-align:center;margin-top:22px}
+
+@media (max-width:560px){
+  .baskets{gap:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  .smoke{animation:none}
+  .basket,.basket .cloth-g,.basket .peek,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+
+<section class="screen cover on" id="s-cover">
+  <span class="eyebrow">透明足跡 × 掃了再買</span>
+  <h1 class="cover-title">今年普渡<br><em>你選哪一籃</em></h1>
+  <p>供桌上三籃大禮包，都蓋著紅布。<br>掀開來看看——哪一籃，最對得起好兄弟。</p>
+  <span class="seal" aria-hidden="true">掃了再買</span>
+  <button class="btn primary" id="btn-start">上　供　桌</button>
+</section>
+
+<section class="screen" id="s-altar" aria-label="供桌">
+  <div class="altar-head">
+    <h2>供　桌</h2>
+    <p>點籃子，掀紅布。三籃都看過再決定，比較不失禮。</p>
+  </div>
+  <div class="incense" aria-hidden="true"><span class="smoke"></span><span class="smoke"></span><span class="pot"></span></div>
+  <div class="baskets" id="baskets"></div>
+  <div class="altar-table" aria-hidden="true"></div>
+  <div class="altar-legs" aria-hidden="true"><i></i><i></i></div>
+  <div class="altar-foot">
+    <div id="altar-cta"></div>
+    <p class="hint" id="altar-hint"></p>
+  </div>
+</section>
+
+<section class="screen" id="s-basket">
+  <div class="panel" id="panel"></div>
+</section>
+
+<section class="screen" id="s-end">
+  <div class="verdict" id="verdict"></div>
+  <div class="chart">
+    <h3>三籃紀錄，一次揭曉</h3>
+    <p class="sub">各籃製造商 2024 年以來的水污染與固定空污裁罰筆數（標註金額合計）</p>
+    <div class="legend">
+      <span><i style="background:var(--water)"></i>水污染</span>
+      <span><i style="background:var(--air)"></i>固定空污</span>
+    </div>
+    <div id="bars"></div>
+  </div>
+  <details class="tbl">
+    <summary>以表格檢視</summary>
+    <table>
+      <tr><th>禮包</th><th>水污染</th><th>固定空污</th><th>合計筆數</th><th>金額</th></tr>
+      <tr><td>澎湃大禮包</td><td>13</td><td>9</td><td>22</td><td>1,803.8 萬元</td></tr>
+      <tr><td>招牌大禮包</td><td>7</td><td>0</td><td>7</td><td>125.15 萬元</td></tr>
+      <tr><td>圓滿大禮包</td><td>0</td><td>0</td><td>0</td><td>0 元</td></tr>
+    </table>
+  </details>
+  <div class="cta">
+    <h3>下次採買，先掃再買</h3>
+    <p>供品的差別不在包裝，在製造它的工廠。<br>掃一下條碼，商品背後的公司和它的環境紀錄，當場看得到；<br>點「我也要+1」，你的訊息會直接送到企業面前。</p>
+    <div class="row">
+      <a class="btn" href="https://play.google.com/store/apps/details?id=org.gcaa.tw.thaubingandroid" target="_blank" rel="noopener">Android 下載</a>
+      <a class="btn" href="https://apps.apple.com/tw/app/%E6%8E%83%E4%BA%86%E5%86%8D%E8%B2%B7/id1529327569" target="_blank" rel="noopener">iPhone 下載</a>
+      <a class="btn quiet" href="https://thaubing.gcaa.org.tw/" target="_blank" rel="noopener">認識透明足跡</a>
+    </div>
+  </div>
+  <p class="foot">資料來源：環境部列管事業污染源裁處資料（2024 年 1 月 1 日至 2026 年 8 月 6 日），由綠色公民行動聯盟「透明足跡」整理。統計範圍為與食品製造最直接相關的「水污染」與「固定污染源空氣污染」兩類裁罰；公務車輛排氣、廢棄物與文書類等其他裁罰不在本統計內。筆數與金額為製造商公司法人層級的合計，非單一產品線；「0 筆」僅指上述期間與類別。禮包內容為依商品資料庫組成的示意，非實際販售商品組合。</p>
+  <div class="replay"><button class="btn quiet" id="btn-replay">再選一次</button></div>
+</section>
+
+</div>
+
+<script>
+const DATA = [
+  {
+    id:"a", name:"澎湃大禮包", tag:"老字號齊聚，體面十足",
+    water:13, air:9, count:22, money:"1,803.8 萬元",
+    items:[
+      {p:"泰山八寶粥", m:"泰山企業", water:2, air:3, money:"663.8 萬元",
+       fact:"晴天查獲殺菌釜廢水繞流排放，放流口撈到食品及果粒殘渣；情節重大，訴願駁回。"},
+      {p:"純萃喝", m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", water:4, air:0, money:"550.8 萬元",
+       fact:"凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍；情節重大。"},
+      {p:"樂事洋芋片", m:"台灣百事食品", water:3, air:0, money:"266.4 萬元",
+       fact:"四個月內 22 天排放量超過許可上限，懸浮固體超標 12.1 倍。"},
+      {p:"紅標料理米酒", m:"臺灣菸酒", water:3, air:3, money:"188.3 萬元",
+       fact:"竹南製瓶場窯爐粒狀污染物超標 17.3 倍，訴願駁回。"},
+      {p:"維力炸醬麵", m:"維力食品", water:0, air:4, money:"134.5 萬元",
+       fact:"異味超標限期改善，複查不降反升，按次連續處罰，改善期限 2026 年 9 月底。"}
+    ]
+  },
+  {
+    id:"b", name:"招牌大禮包", tag:"人氣品牌，闔家熟悉",
+    water:7, air:0, count:7, money:"125.15 萬元",
+    items:[
+      {p:"波的多洋芋片", m:"華元食品", water:1, air:0, money:"73.45 萬元",
+       fact:"廢水調整池馬達故障，白色廢水溢流到廠外水溝。"},
+      {p:"統一肉燥麵", m:"統一企業", water:4, air:0, money:"49.7 萬元",
+       fact:"湖口廠管線破裂污染北勢溪，楊梅廠放流水超標。"},
+      {p:"乖乖", m:"乖乖公司", water:1, air:0, money:"1 萬元",
+       fact:"未依許可文件登記事項運作。"},
+      {p:"林鳳營鮮乳", m:"味全食品", water:1, air:0, money:"1 萬元",
+       fact:"設備保養停電，監測數據不足。"},
+      {p:"悅氏礦泉水", m:"名牌食品", water:0, air:0, money:null, fact:null}
+    ]
+  },
+  {
+    id:"c", name:"圓滿大禮包", tag:"順口順心，供好供滿",
+    water:0, air:0, count:0, money:"0 元",
+    items:[
+      {p:"愛之味八寶粥", m:"愛之味", water:0, air:0, money:null, fact:null},
+      {p:"味丹雙響泡", m:"味丹企業", water:0, air:0, money:null, fact:null},
+      {p:"卡迪那洋芋片", m:"聯華食品工業", water:0, air:0, money:null, fact:null},
+      {p:"光泉鮮乳", m:"光泉牧場", water:0, air:0, money:null, fact:null},
+      {p:"金門高粱", m:"金門酒廠", water:0, air:0, money:null, fact:null}
+    ]
+  }
+];
+
+const viewed = new Set();
+let current = null;
+
+function basketSVG(name){
+  return `
+  <svg viewBox="0 0 200 170" role="img" aria-hidden="true">
+    <g class="peek">
+      <rect x="52" y="52" width="26" height="34" rx="3" fill="#A63A2B"/>
+      <rect x="84" y="44" width="30" height="42" rx="3" fill="#3E6B49"/>
+      <rect x="120" y="54" width="26" height="32" rx="3" fill="#C99A3F"/>
+      <circle cx="66" cy="50" r="6" fill="#7E2A20"/>
+      <circle cx="134" cy="52" r="6" fill="#9C7A2F"/>
+    </g>
+    <path d="M30 88 Q100 70 170 88 L160 140 Q100 156 40 140 Z" fill="#B98F52"/>
+    <path d="M30 88 Q100 70 170 88 L168 96 Q100 78 32 96 Z" fill="#8F6D3A"/>
+    <g stroke="#8F6D3A" stroke-width="2" opacity=".55">
+      <path d="M44 100 L52 138"/><path d="M68 96 L73 143"/><path d="M96 94 L98 147"/>
+      <path d="M124 96 L121 144"/><path d="M150 100 L143 139"/>
+      <path d="M36 112 Q100 126 164 112" fill="none"/>
+      <path d="M39 126 Q100 140 161 126" fill="none"/>
+    </g>
+    <g class="cloth-g">
+      <path d="M28 86 Q40 40 100 34 Q160 40 172 86 Q150 74 100 72 Q50 74 28 86 Z" fill="#B3282D"/>
+      <path d="M28 86 Q40 40 100 34 Q160 40 172 86 L166 92 Q100 76 34 92 Z" fill="#8E1F23"/>
+      <path d="M60 46 Q64 62 58 78 M100 36 Q100 54 100 72 M140 46 Q136 62 142 78" stroke="#D0433F" stroke-width="2.5" fill="none" opacity=".8"/>
+      <path d="M166 88 L188 118 L176 124 L158 96 Z" fill="#B3282D"/>
+      <circle cx="182" cy="121" r="3" fill="#D8A93D"/>
+    </g>
+    <g>
+      <rect x="45" y="103" width="110" height="32" rx="4" fill="#7E1B1F" stroke="#D8A93D" stroke-width="1.5"/>
+      <text x="100" y="127" text-anchor="middle" font-size="20" font-weight="700" fill="#F3E9D8" font-family="inherit">${name}</text>
+    </g>
+  </svg>`;
+}
+
+function renderAltar(){
+  const wrap = document.getElementById("baskets");
+  wrap.innerHTML = "";
+  DATA.forEach(b=>{
+    const el = document.createElement("button");
+    el.className = "basket" + (viewed.has(b.id) ? " opened" : "");
+    el.setAttribute("aria-label", b.name + (viewed.has(b.id) ? "（已掀開）" : "（未掀開）"));
+    el.innerHTML = basketSVG(b.name) +
+      `<div class="basket-state">${viewed.has(b.id) ? "已掀開" : "　"}</div>`;
+    el.addEventListener("click", ()=>{
+      if(!viewed.has(b.id)){
+        el.classList.add("opened");
+        setTimeout(()=>openBasket(b.id), 480);
+      } else {
+        openBasket(b.id);
+      }
+    });
+    wrap.appendChild(el);
+  });
+  const cta = document.getElementById("altar-cta");
+  const hint = document.getElementById("altar-hint");
+  if(viewed.size === 0){
+    cta.innerHTML = "";
+    hint.textContent = "";
+  } else {
+    cta.innerHTML = `<button class="btn primary" id="btn-decide">我 決 定 好 了</button>`;
+    hint.textContent = viewed.size < 3 ? `已看過 ${viewed.size}／3 籃` : "三籃都看過了，選一籃供上吧。";
+    document.getElementById("btn-decide").addEventListener("click", ()=>{
+      show("s-basket");
+      renderChoose();
+    });
+  }
+}
+
+function chipRow(w, a){
+  if(w === 0 && a === 0) return `<span class="chip zero">2024 年以來，水污染與固定空污裁罰 0 筆</span>`;
+  let h = "";
+  if(w) h += `<span class="chip water"><i></i>水污染 ${w} 筆</span>`;
+  if(a) h += `<span class="chip air"><i></i>固定空污 ${a} 筆</span>`;
+  return h;
+}
+
+function openBasket(id){
+  current = id;
+  viewed.add(id);
+  const b = DATA.find(x=>x.id===id);
+  const p = document.getElementById("panel");
+  const items = b.items.map(it=>{
+    const stat = (it.water||it.air)
+      ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
+    const fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
+    return `<div class="item">
+      <div class="item-top"><span class="item-name">${it.p}</span><span class="item-maker">製造商：${it.m}</span></div>
+      <div class="chips">${chipRow(it.water, it.air)}</div>
+      ${stat}${fact}
+    </div>`;
+  }).join("");
+  const sum = b.count
+    ? `<div class="basket-sum"><b>${b.count} 筆／${b.money}</b><span>籃內製造商 2024 年以來水污染與固定空污裁罰合計</span></div>`
+    : `<div class="basket-sum"><b>0 筆</b><span>籃內五家製造商 2024 年以來皆無水污染與固定空污裁罰</span></div>`;
+  p.innerHTML = `
+    <div class="panel-head">
+      <span class="eyebrow">掀開紅布</span>
+      <h2>${b.name}</h2>
+      <p>${b.tag}</p>
+    </div>
+    ${items}${sum}
+    <div class="panel-actions">
+      <button class="btn quiet" id="btn-back">再看看別籃</button>
+      <button class="btn primary" id="btn-offer">就供這籃</button>
+    </div>
+    <div class="confirm" id="confirm">
+      <p>還有紅布沒掀開。不先看看嗎？</p>
+      <div class="row">
+        <button class="btn quiet" id="btn-goback">回供桌看看</button>
+        <button class="btn" id="btn-sure">心意已決</button>
+      </div>
+    </div>`;
+  document.getElementById("btn-back").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+  document.getElementById("btn-offer").addEventListener("click", ()=>{
+    if(viewed.size < 3){
+      document.getElementById("confirm").classList.add("on");
+      document.getElementById("btn-goback").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+      document.getElementById("btn-sure").addEventListener("click", ()=>finish(b.id));
+    } else {
+      finish(b.id);
+    }
+  });
+  show("s-basket");
+  window.scrollTo({top:0});
+}
+
+function renderChoose(){
+  const p = document.getElementById("panel");
+  const rows = DATA.map(b=>`
+    <div class="item">
+      <div class="item-top"><span class="item-name">${b.name}</span>
+      <span class="item-maker">${b.count ? b.count + " 筆／" + b.money : "口徑內 0 筆"}</span></div>
+      <div class="panel-actions" style="margin-top:8px;justify-content:flex-start">
+        <button class="btn quiet" data-view="${b.id}">再看一眼</button>
+        <button class="btn primary" data-pick="${b.id}">供這籃</button>
+      </div>
+    </div>`).join("");
+  p.innerHTML = `
+    <div class="panel-head">
+      <span class="eyebrow">最後一步</span>
+      <h2>選一籃，供上</h2>
+      <p>好兄弟在看，河川與空氣也在看。</p>
+    </div>${rows}`;
+  p.querySelectorAll("[data-view]").forEach(el=>el.addEventListener("click", ()=>openBasket(el.dataset.view)));
+  p.querySelectorAll("[data-pick]").forEach(el=>el.addEventListener("click", ()=>finish(el.dataset.pick)));
+  show("s-basket");
+  window.scrollTo({top:0});
+}
+
+const VERDICTS = {
+  a:{t:"這籃很澎湃，紀錄也很澎湃",
+     d:"五家製造商，2024 年以來共 22 筆水污染與固定空污裁罰、金額 1,803.8 萬元——包括凌晨查獲的偷排，和晴天繞流的廢水。心意很重，附帶的東西也是。"},
+  b:{t:"這籃……小有心事",
+     d:"都是熟面孔沒錯，但其中四家製造商 2024 年以來共 7 筆裁罰。不算最重，也稱不上乾淨——而更乾淨的那一籃，其實就在旁邊。"},
+  c:{t:"這籃，供得安心",
+     d:"五家製造商，2024 年以來水污染與固定空污裁罰通通是零。好兄弟收得安心，河川與空氣也是。這就是「用消費改變環境」的樣子。"}
+};
+
+function finish(id){
+  const v = VERDICTS[id];
+  document.getElementById("verdict").innerHTML = `
+    <span class="eyebrow">你供上了「${DATA.find(x=>x.id===id).name}」</span>
+    <h2>${v.t}</h2><p>${v.d}</p>`;
+  const bars = document.getElementById("bars");
+  const max = Math.max(...DATA.map(b=>b.count));
+  bars.innerHTML = DATA.map(b=>{
+    const wPct = b.water / max * 100, aPct = b.air / max * 100;
+    let segs = "";
+    if(b.water && b.air){
+      segs = `<div class="seg water first" style="width:${wPct*0.55}%"></div><div class="seg air last" style="width:${aPct*0.55}%"></div>`;
+    } else if(b.water){
+      segs = `<div class="seg water only" style="width:${wPct*0.55}%"></div>`;
+    } else if(b.air){
+      segs = `<div class="seg air only" style="width:${aPct*0.55}%"></div>`;
+    }
+    const val = b.count ? `<span class="bar-val">${b.count} 筆｜${b.money}</span>` : `<span class="zero-note">0 筆——這就是差別</span>`;
+    const mark = b.id===id ? "（你選的）" : "";
+    return `<div class="row-label"><b>${b.name}${mark}</b></div>
+      <div class="bar-track">${segs}${val}</div>`;
+  }).join("");
+  show("s-end");
+  window.scrollTo({top:0});
+}
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  document.getElementById(id).classList.add("on");
+}
+
+document.getElementById("btn-start").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+document.getElementById("btn-replay").addEventListener("click", ()=>{
+  viewed.clear(); current = null;
+  show("s-altar"); renderAltar();
+  window.scrollTo({top:0});
+});
+</script>
+</body>
+</html>
