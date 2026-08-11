@@ -117,6 +117,18 @@ a{color:var(--gold)}
 .item-maker{color:var(--muted);font-size:13.5px}
 .item-lines{font-size:13px;color:var(--muted);margin-top:3px}
 .item-lines b{color:var(--ink);font-weight:600}
+.item-main{flex:1;min-width:0}
+.item-wrap{display:flex;gap:12px;align-items:flex-start}
+.item-img{width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex-shrink:0;background:#F3E9D8}
+.chips-btn{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 2px;background:none;border:none;color:inherit;padding:0;text-align:left}
+.chips-btn .hint{font-size:12px;color:var(--gold);border-bottom:1px dashed var(--gold)}
+.chips-btn[aria-expanded="true"] .hint{border-bottom-style:solid}
+.recs{border-top:1px dashed var(--line);margin-top:8px;padding-top:6px}
+.rec{display:flex;gap:10px;font-size:13px;padding:4px 0;align-items:baseline;flex-wrap:wrap;border-top:1px dotted var(--line)}
+.rec:first-child{border-top:none}
+.rec-d{color:var(--muted);white-space:nowrap}
+.rec-m{white-space:nowrap;font-weight:600}
+.rec-f{color:var(--muted);flex-basis:100%;margin-top:-2px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);
   border:1px solid var(--line);border-radius:99px;padding:1px 10px}
@@ -250,47 +262,83 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 </div>
 
 <script>
+const IMG = "https://thaubing.gcaa.org.tw/sites/default/files/product/";
 const DATA = [
   {
     id:"a", name:"澎湃大禮包", tag:"老字號齊聚，體面十足",
     water:13, air:9, count:22, money:"1,803.8 萬元",
     items:[
-      {p:"泰山八寶粥", lines:"泰山純水、Cheers 氣泡水、仙草蜜、健康好理由芥花油、再睡五分鐘瓶裝茶", m:"泰山企業", water:2, air:3, money:"663.8 萬元",
-       fact:"晴天查獲殺菌釜廢水繞流排放，放流口撈到食品及果粒殘渣；情節重大，訴願駁回。"},
-      {p:"純萃喝", lines:"活益比菲多、植物の優、質立希臘式優格、優意思優格", m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", water:4, air:0, money:"550.8 萬元",
-       fact:"凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍；情節重大。"},
-      {p:"樂事洋芋片", lines:"多力多滋、奇多——三個牌子同一家公司", m:"台灣百事食品", water:3, air:0, money:"266.4 萬元",
-       fact:"四個月內 22 天排放量超過許可上限，懸浮固體超標 12.1 倍。"},
-      {p:"紅標料理米酒", lines:"台灣啤酒、黑麥汁、75% 酒精、酒粕青春露", m:"臺灣菸酒", water:3, air:3, money:"188.3 萬元",
-       fact:"竹南製瓶場窯爐粒狀污染物超標 17.3 倍，訴願駁回。"},
-      {p:"維力炸醬麵", lines:"張君雅小妹妹全系列、維力手打麵、台酒花雕雞麵（代工）", m:"維力食品", water:0, air:4, money:"134.5 萬元",
-       fact:"異味超標限期改善，複查不降反升，按次連續處罰，改善期限 2026 年 9 月底。"}
+      {p:"泰山八寶粥", m:"泰山企業", lines:"泰山純水、Cheers 氣泡水、仙草蜜、健康好理由芥花油、再睡五分鐘瓶裝茶", img:"4710095987402_MTU4.jpg", water:2, air:3, money:"663.8 萬元",
+       fact:"晴天查獲殺菌釜廢水繞流排放，放流口撈到食品及果粒殘渣；情節重大，訴願駁回。",
+       recs:[
+        ["2024-08-23","302.4 萬","殺菌釜廢水繞流排放，放流口查獲食品及果粒殘渣"],
+        ["2024-10-25","302.4 萬","同案第二張罰單；情節重大，訴願駁回"],
+        ["2025-02-17","10 萬","鍋爐重油年用量超過許可"],
+        ["2025-02-21","27 萬","鍋爐戴奧辛排放超標（0.774，標準 0.5）"],
+        ["2026-03-25","22 萬","鍋爐燃料防制設備不符管制標準，限改至 2026-06-17"]]},
+      {p:"純萃喝", m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", lines:"活益比菲多、植物の優、質立希臘式優格、優意思優格", img:"4710784962574_Njkz.jpg", water:4, air:0, money:"550.8 萬元",
+       fact:"凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍；情節重大。",
+       recs:[
+        ["2024-01-08","7.5 萬","廢水採樣值遠超過許可登載（COD 15,100，許可 2,970）"],
+        ["2024-02-20","12.3 萬","複查仍不合格，屆期未完成改善"],
+        ["2025-04-09","16.2 萬","查獲許可未登載管線、未依許可操作"],
+        ["2025-04-09","514.8 萬","凌晨查獲軟管繞流偷排，COD 超標 14.9 倍；情節重大"]]},
+      {p:"樂事洋芋片", m:"台灣百事食品", lines:"多力多滋、奇多——三個牌子同一家公司", img:"4710543119041_Mjg0.jpg", water:3, air:0, money:"266.4 萬元",
+       fact:"四個月內 22 天排放量超過許可上限，懸浮固體超標 12.1 倍。",
+       recs:[
+        ["2025-06-11","18.9 萬","放流水溫 36.2 度，超過標準 35 度"],
+        ["2025-09-22","29.7 萬","四個月內 22 天排放量超過許可上限"],
+        ["2025-09-22","217.8 萬","COD 超標 3.1 倍、懸浮固體超標 12.1 倍"]]},
+      {p:"紅標料理米酒", m:"臺灣菸酒", lines:"台灣啤酒、黑麥汁、75% 酒精、酒粕青春露", img:"4711588855260_NjI2.jpg", water:3, air:3, money:"188.3 萬元",
+       fact:"竹南製瓶場窯爐粒狀污染物超標 17.3 倍，訴願駁回。",
+       recs:[
+        ["2024-12-10","10 萬","製瓶場洗滌塔廢氣溫度近 400 度，許可上限 350 度"],
+        ["2024-12-14","150 萬","製瓶場窯爐粒狀污染物超標 17.3 倍，訴願駁回"],
+        ["2025-02-26","6.3 萬","用水量連三個月超過許可"],
+        ["2025-04-30","10 萬","洗滌塔操作條件不符許可"],
+        ["2025-07-24","6 萬","儲槽監測未依規定申報"],
+        ["2025-07-24","6 萬","儲槽監測未依規定申報（另一場）"]]},
+      {p:"維力炸醬麵", m:"維力食品", lines:"張君雅小妹妹全系列、維力手打麵、台酒花雕雞麵（代工）", img:"4710199010372_MjM0.jpg", water:0, air:4, money:"134.5 萬元",
+       fact:"異味超標限期改善，複查不降反升，按次連續處罰，改善期限 2026 年 9 月底。",
+       recs:[
+        ["2025-05-21","10 萬","洗滌塔儀表故障、廢氣處理量超出許可"],
+        ["2025-05-21","16.5 萬","靜電集塵器未開、水槽未密閉致油煙逸散"],
+        ["2025-12-30","40.5 萬","異味 7,410，標準 2,000；限期改善"],
+        ["2026-06-23","67.5 萬","複查異味 9,770 不降反升，按次連續處罰"]]}
     ]
   },
   {
     id:"b", name:"招牌大禮包", tag:"人氣品牌，闔家熟悉",
     water:7, air:0, count:7, money:"125.15 萬元",
     items:[
-      {p:"波的多洋芋片", lines:"咔辣姆久、真魷味、蝦肉蝦餅、甜卡力", m:"華元食品", water:1, air:0, money:"73.45 萬元",
-       fact:"廢水調整池馬達故障，白色廢水溢流到廠外水溝。"},
-      {p:"統一肉燥麵", lines:"麥香、茶裏王、科學麵、瑞穗鮮乳、統一布丁", m:"統一企業", water:4, air:0, money:"49.7 萬元",
-       fact:"湖口廠管線破裂污染北勢溪，楊梅廠放流水超標。"},
-      {p:"乖乖", lines:"孔雀餅乾、孔雀捲心餅、米乖乖", m:"乖乖公司", water:1, air:0, money:"1 萬元",
-       fact:"未依許可文件登記事項運作。"},
-      {p:"林鳳營鮮乳", lines:"貝納頌咖啡、木崗雞蛋、萬丹保久乳", m:"味全食品", water:1, air:0, money:"1 萬元",
-       fact:"設備保養停電，監測數據不足。"},
-      {p:"悅氏礦泉水", lines:"悅氏鹼性水、悅氏油切綠茶、悅氏礦泉茶品", m:"名牌食品", water:0, air:0, money:null, fact:null}
+      {p:"波的多洋芋片", m:"華元食品", lines:"咔辣姆久、真魷味、蝦肉蝦餅、甜卡力", img:"4710176121145_NTgz.jpg", water:1, air:0, money:"73.45 萬元",
+       fact:"廢水調整池馬達故障，白色廢水溢流到廠外水溝。",
+       recs:[["2026-04-17","73.45 萬","調整池馬達故障，白色廢水溢流到廠外水溝"]]},
+      {p:"科學麵", m:"統一企業", lines:"統一肉燥麵、麥香、茶裏王、瑞穗鮮乳、統一布丁", img:"4710088410191_ODI2.jpg", water:4, air:0, money:"49.7 萬元",
+       fact:"湖口廠管線破裂污染北勢溪，楊梅廠放流水超標。",
+       recs:[
+        ["2024-11-12","16.8 萬","楊梅廠放流口採樣未符放流水標準"],
+        ["2025-11-18","5 萬","湖口廠管線破裂，污染北勢溪"],
+        ["2026-02-23","6.3 萬","新市廠操作紀錄未依規定"],
+        ["2026-06-11","21.6 萬","楊梅廠放流水懸浮固體超標"]]},
+      {p:"乖乖", m:"乖乖公司", lines:"孔雀餅乾、孔雀捲心餅、米乖乖", img:"4710015101291_Njgw.jpg", water:1, air:0, money:"1 萬元",
+       fact:"未依許可文件登記事項運作。",
+       recs:[["2025-10-04","1 萬","未依許可文件登記事項運作"]]},
+      {p:"林鳳營鮮乳", m:"味全食品", lines:"貝納頌咖啡、木崗雞蛋、萬丹保久乳", img:"4710063312151_NTg3.jpg", water:1, air:0, money:"1 萬元",
+       fact:"設備保養停電，監測數據不足。",
+       recs:[["2024-11-05","1 萬","監測設施保養停電，數據有效率不足"]]},
+      {p:"悅氏礦泉水", m:"名牌食品", lines:"悅氏鹼性水、悅氏油切綠茶、悅氏礦泉茶品", img:"4710632001318_MTU22.jpg", water:0, air:0, money:null, fact:null}
     ]
   },
   {
     id:"c", name:"圓滿大禮包", tag:"順口順心，供好供滿",
     water:0, air:0, count:0, money:"0 元",
     items:[
-      {p:"愛之味八寶粥", lines:"分解茶、純濃燕麥、牛奶花生、麥仔茶", m:"愛之味", water:0, air:0, money:null, fact:null},
-      {p:"味丹雙響泡", lines:"味味A排骨雞湯麵、味味一品、多喝水、百事可樂", m:"味丹企業", water:0, air:0, money:null, fact:null},
-      {p:"卡迪那洋芋片", lines:"可樂果、元本山海苔、萬歲牌堅果", m:"聯華食品工業", water:0, air:0, money:null, fact:null},
-      {p:"光泉鮮乳", lines:"乳香世家、光泉豆漿、午後時光奶茶", m:"光泉牧場", water:0, air:0, money:null, fact:null},
-      {p:"金門高粱", lines:"金門高粱酒全系列", m:"金門酒廠", water:0, air:0, money:null, fact:null}
+      {p:"愛之味甜八寶", m:"愛之味", lines:"分解茶、純濃燕麥、牛奶花生、麥仔茶", img:"4710626428312_Nzc0.jpg", water:0, air:0, money:null, fact:null},
+      {p:"味丹雙響泡", m:"味丹企業", lines:"味味A排骨雞湯麵、味味一品、多喝水、百事可樂", img:"4710110233675_NDM2.jpg", water:0, air:0, money:null, fact:null},
+      {p:"卡迪那95℃薯條", m:"聯華食品工業", lines:"可樂果、元本山海苔、萬歲牌堅果", img:"4710022024972_ODk0.jpg", water:0, air:0, money:null, fact:null},
+      {p:"光泉鮮乳", m:"光泉牧場", lines:"乳香世家、光泉豆漿、午後時光奶茶", img:"4710105010113_ODgz.jpg", water:0, air:0, money:null, fact:null},
+      {p:"金門高粱", m:"金門酒廠", lines:"金門高粱酒全系列", img:"4719433003095_OTQ3.jpg", water:0, air:0, money:null, fact:null}
     ]
   }
 ];
@@ -381,16 +429,24 @@ function openBasket(id){
   viewed.add(id);
   const b = DATA.find(x=>x.id===id);
   const p = document.getElementById("panel");
-  const items = b.items.map(it=>{
+  const items = b.items.map((it,idx)=>{
     const stat = (it.water||it.air)
       ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
     const fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
     const ln = it.lines ? `<div class="item-lines"><b>這家公司還做</b>：${it.lines}</div>` : "";
+    const im = it.img ? `<img class="item-img" src="${IMG}${it.img}" alt="${it.p}" loading="lazy">` : "";
+    const chips = it.recs
+      ? `<button class="chips-btn" aria-expanded="false" data-recs="${b.id}-${idx}">${chipRow(it.water, it.air)}<span class="hint">點開逐筆紀錄</span></button>
+         <div class="recs" id="recs-${b.id}-${idx}" hidden>${it.recs.map(r=>
+           `<div class="rec"><span class="rec-d">${r[0]}</span><span class="rec-m">${r[1]}</span><span class="rec-f">${r[2]}</span></div>`).join("")}</div>`
+      : `<div class="chips">${chipRow(it.water, it.air)}</div>`;
     return `<div class="item">
+      <div class="item-wrap">${im}<div class="item-main">
       <div class="item-top"><span class="item-name">${it.p}</span><span class="item-maker">製造商：${it.m}</span></div>
       ${ln}
-      <div class="chips">${chipRow(it.water, it.air)}</div>
+      ${chips}
       ${stat}${fact}
+      </div></div>
     </div>`;
   }).join("");
   const sum = b.count
@@ -414,6 +470,12 @@ function openBasket(id){
         <button class="btn" id="btn-sure">心意已決</button>
       </div>
     </div>`;
+  p.querySelectorAll(".chips-btn").forEach(btn=>btn.addEventListener("click", ()=>{
+    const recs = document.getElementById("recs-"+btn.dataset.recs);
+    const open = btn.getAttribute("aria-expanded")==="true";
+    btn.setAttribute("aria-expanded", String(!open));
+    recs.hidden = open;
+  }));
   document.getElementById("btn-back").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
   document.getElementById("btn-offer").addEventListener("click", ()=>{
     if(viewed.size < 3){
