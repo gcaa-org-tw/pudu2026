@@ -94,9 +94,10 @@ a{color:var(--gold)}
 .basket.opened .cloth-g{transform:translate(14%,-30%) rotate(14deg);opacity:0}
 .basket .peek{opacity:0;transition:opacity .4s .15s}
 .basket.opened .peek{opacity:1}
-.basket-state{font-size:13px;color:var(--gold);min-height:1.6em;position:relative;z-index:2}
 .baskets{position:relative;z-index:1}
-.altar-table{height:34px;border-radius:3px;background:linear-gradient(#7A4E2D,#5C3A20);border-top:2px solid #96633A;margin-top:-34px;position:relative;z-index:0}
+.basket .folded{opacity:0;transition:opacity .4s ease .25s}
+.basket.opened .folded{opacity:1}
+.altar-table{height:34px;border-radius:3px;background:linear-gradient(#7A4E2D,#5C3A20);border-top:2px solid #96633A;margin-top:-26px;position:relative;z-index:0}
 .altar-legs{display:flex;justify-content:space-between;padding:0 9%}
 .altar-legs i{width:14px;height:34px;background:#4E311B;border-radius:0 0 3px 3px}
 .altar-foot{text-align:center;margin-top:22px;min-height:3em}
@@ -114,6 +115,8 @@ a{color:var(--gold)}
 .item-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
 .item-name{font-weight:600;font-size:17px}
 .item-maker{color:var(--muted);font-size:13.5px}
+.item-lines{font-size:13px;color:var(--muted);margin-top:3px}
+.item-lines b{color:var(--ink);font-weight:600}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);
   border:1px solid var(--line);border-radius:99px;padding:1px 10px}
@@ -253,15 +256,15 @@ const DATA = [
     id:"a", name:"澎湃大禮包", tag:"老字號齊聚，體面十足",
     water:13, air:9, count:22, money:"1,803.8 萬元",
     items:[
-      {p:"泰山八寶粥", m:"泰山企業", water:2, air:3, money:"663.8 萬元",
+      {p:"泰山八寶粥", lines:"泰山純水、Cheers 氣泡水、仙草蜜、健康好理由芥花油、再睡五分鐘瓶裝茶", m:"泰山企業", water:2, air:3, money:"663.8 萬元",
        fact:"晴天查獲殺菌釜廢水繞流排放，放流口撈到食品及果粒殘渣；情節重大，訴願駁回。"},
-      {p:"純萃喝", m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", water:4, air:0, money:"550.8 萬元",
+      {p:"純萃喝", lines:"活益比菲多、植物の優、質立希臘式優格、優意思優格", m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", water:4, air:0, money:"550.8 萬元",
        fact:"凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍；情節重大。"},
-      {p:"樂事洋芋片", m:"台灣百事食品", water:3, air:0, money:"266.4 萬元",
+      {p:"樂事洋芋片", lines:"多力多滋、奇多——三個牌子同一家公司", m:"台灣百事食品", water:3, air:0, money:"266.4 萬元",
        fact:"四個月內 22 天排放量超過許可上限，懸浮固體超標 12.1 倍。"},
-      {p:"紅標料理米酒", m:"臺灣菸酒", water:3, air:3, money:"188.3 萬元",
+      {p:"紅標料理米酒", lines:"台灣啤酒、黑麥汁、75% 酒精、酒粕青春露", m:"臺灣菸酒", water:3, air:3, money:"188.3 萬元",
        fact:"竹南製瓶場窯爐粒狀污染物超標 17.3 倍，訴願駁回。"},
-      {p:"維力炸醬麵", m:"維力食品", water:0, air:4, money:"134.5 萬元",
+      {p:"維力炸醬麵", lines:"張君雅小妹妹全系列、維力手打麵、台酒花雕雞麵（代工）", m:"維力食品", water:0, air:4, money:"134.5 萬元",
        fact:"異味超標限期改善，複查不降反升，按次連續處罰，改善期限 2026 年 9 月底。"}
     ]
   },
@@ -269,26 +272,26 @@ const DATA = [
     id:"b", name:"招牌大禮包", tag:"人氣品牌，闔家熟悉",
     water:7, air:0, count:7, money:"125.15 萬元",
     items:[
-      {p:"波的多洋芋片", m:"華元食品", water:1, air:0, money:"73.45 萬元",
+      {p:"波的多洋芋片", lines:"咔辣姆久、真魷味、蝦肉蝦餅、甜卡力", m:"華元食品", water:1, air:0, money:"73.45 萬元",
        fact:"廢水調整池馬達故障，白色廢水溢流到廠外水溝。"},
-      {p:"統一肉燥麵", m:"統一企業", water:4, air:0, money:"49.7 萬元",
+      {p:"統一肉燥麵", lines:"麥香、茶裏王、科學麵、瑞穗鮮乳、統一布丁", m:"統一企業", water:4, air:0, money:"49.7 萬元",
        fact:"湖口廠管線破裂污染北勢溪，楊梅廠放流水超標。"},
-      {p:"乖乖", m:"乖乖公司", water:1, air:0, money:"1 萬元",
+      {p:"乖乖", lines:"孔雀餅乾、孔雀捲心餅、米乖乖", m:"乖乖公司", water:1, air:0, money:"1 萬元",
        fact:"未依許可文件登記事項運作。"},
-      {p:"林鳳營鮮乳", m:"味全食品", water:1, air:0, money:"1 萬元",
+      {p:"林鳳營鮮乳", lines:"貝納頌咖啡、木崗雞蛋、萬丹保久乳", m:"味全食品", water:1, air:0, money:"1 萬元",
        fact:"設備保養停電，監測數據不足。"},
-      {p:"悅氏礦泉水", m:"名牌食品", water:0, air:0, money:null, fact:null}
+      {p:"悅氏礦泉水", lines:"悅氏鹼性水、悅氏油切綠茶、悅氏礦泉茶品", m:"名牌食品", water:0, air:0, money:null, fact:null}
     ]
   },
   {
     id:"c", name:"圓滿大禮包", tag:"順口順心，供好供滿",
     water:0, air:0, count:0, money:"0 元",
     items:[
-      {p:"愛之味八寶粥", m:"愛之味", water:0, air:0, money:null, fact:null},
-      {p:"味丹雙響泡", m:"味丹企業", water:0, air:0, money:null, fact:null},
-      {p:"卡迪那洋芋片", m:"聯華食品工業", water:0, air:0, money:null, fact:null},
-      {p:"光泉鮮乳", m:"光泉牧場", water:0, air:0, money:null, fact:null},
-      {p:"金門高粱", m:"金門酒廠", water:0, air:0, money:null, fact:null}
+      {p:"愛之味八寶粥", lines:"分解茶、純濃燕麥、牛奶花生、麥仔茶", m:"愛之味", water:0, air:0, money:null, fact:null},
+      {p:"味丹雙響泡", lines:"味味A排骨雞湯麵、味味一品、多喝水、百事可樂", m:"味丹企業", water:0, air:0, money:null, fact:null},
+      {p:"卡迪那洋芋片", lines:"可樂果、元本山海苔、萬歲牌堅果", m:"聯華食品工業", water:0, air:0, money:null, fact:null},
+      {p:"光泉鮮乳", lines:"乳香世家、光泉豆漿、午後時光奶茶", m:"光泉牧場", water:0, air:0, money:null, fact:null},
+      {p:"金門高粱", lines:"金門高粱酒全系列", m:"金門酒廠", water:0, air:0, money:null, fact:null}
     ]
   }
 ];
@@ -321,6 +324,11 @@ function basketSVG(name){
       <path d="M166 88 L188 118 L176 124 L158 96 Z" fill="#B3282D"/>
       <circle cx="182" cy="121" r="3" fill="#D8A93D"/>
     </g>
+    <g class="folded">
+      <path d="M128 148 Q142 136 158 143 Q174 133 190 141 Q198 150 184 154 Q168 159 148 156 Q132 156 128 148 Z" fill="#B3282D"/>
+      <path d="M140 149 Q156 142 172 146 M150 153 Q166 149 180 149" stroke="#8E1F23" stroke-width="2" fill="none"/>
+      <circle cx="188" cy="145" r="2.5" fill="#D8A93D"/>
+    </g>
     <g>
       <rect x="45" y="103" width="110" height="32" rx="4" fill="#7E1B1F" stroke="#D8A93D" stroke-width="1.5"/>
       <text x="100" y="127" text-anchor="middle" font-size="20" font-weight="700" fill="#F3E9D8" font-family="inherit">${name}</text>
@@ -335,8 +343,7 @@ function renderAltar(){
     const el = document.createElement("button");
     el.className = "basket" + (viewed.has(b.id) ? " opened" : "");
     el.setAttribute("aria-label", b.name + (viewed.has(b.id) ? "（已掀開）" : "（未掀開）"));
-    el.innerHTML = basketSVG(b.name) +
-      `<div class="basket-state">${viewed.has(b.id) ? "已掀開" : "　"}</div>`;
+    el.innerHTML = basketSVG(b.name);
     el.addEventListener("click", ()=>{
       if(!viewed.has(b.id)){
         el.classList.add("opened");
@@ -379,8 +386,10 @@ function openBasket(id){
     const stat = (it.water||it.air)
       ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
     const fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
+    const ln = it.lines ? `<div class="item-lines"><b>這家公司還做</b>：${it.lines}</div>` : "";
     return `<div class="item">
       <div class="item-top"><span class="item-name">${it.p}</span><span class="item-maker">製造商：${it.m}</span></div>
+      ${ln}
       <div class="chips">${chipRow(it.water, it.air)}</div>
       ${stat}${fact}
     </div>`;
