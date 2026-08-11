@@ -255,7 +255,7 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
       <a class="btn quiet" href="https://thaubing.gcaa.org.tw/" target="_blank" rel="noopener">認識透明足跡</a>
     </div>
   </div>
-  <p class="foot">資料來源：環境部列管事業污染源裁處資料（2024 年 1 月 1 日至 2026 年 8 月 6 日），由綠色公民行動聯盟「透明足跡」整理。統計範圍為與食品製造最直接相關的「水污染」與「固定污染源空氣污染」兩類裁罰；公務車輛排氣、廢棄物與文書類等其他裁罰不在本統計內。筆數與金額為製造商公司法人層級的合計，非單一產品線；「0 筆」僅指上述期間與類別。禮包內容為依商品資料庫組成的示意，非實際販售商品組合。</p>
+  <p class="foot">資料來源：環境部列管事業污染源裁處資料（2024 年 1 月 1 日至 2026 年 8 月 6 日），由綠色公民行動聯盟「透明足跡」整理。統計範圍為與食品製造最直接相關的「水污染」與「固定污染源空氣污染」兩類裁罰；公務車輛排氣、廢棄物與文書類等其他裁罰不在本統計內。筆數與金額為製造商公司法人層級的合計，非單一產品線；零裁罰或金額低，僅指這兩類環境裁罰與上述期間，不代表各公司在食品安全等其他方面的紀錄。禮包內容為依商品資料庫組成的示意，非實際販售商品組合。</p>
   <div class="replay"><button class="btn quiet" id="btn-replay">再選一次</button></div>
 </section>
 
@@ -325,7 +325,7 @@ const DATA = [
        fact:"未依許可文件登記事項運作。",
        recs:[["2025-10-04","1 萬","未依許可文件登記事項運作"]]},
       {p:"林鳳營鮮乳", m:"味全食品", lines:"貝納頌咖啡、木崗雞蛋、萬丹保久乳", img:"4710063312151_NTg3.jpg", water:1, air:0, money:"1 萬元",
-       fact:"設備保養停電，監測數據不足。",
+       fact:"設備保養停電，監測數據不足。另：味全所屬頂新集團 2014 年劣質油品事件屬食品安全紀錄，不在本遊戲的環境裁罰統計內。",
        recs:[["2024-11-05","1 萬","監測設施保養停電，數據有效率不足"]]},
       {p:"悅氏礦泉水", m:"名牌食品", lines:"悅氏鹼性水、悅氏油切綠茶、悅氏礦泉茶品", img:"4710632001318_MTU22.jpg", water:0, air:0, money:null, fact:null}
     ]
@@ -495,7 +495,7 @@ function renderChoose(){
   const rows = DATA.map(b=>`
     <div class="item">
       <div class="item-top"><span class="item-name">${b.name}</span>
-      <span class="item-maker">${b.count ? b.count + " 筆／" + b.money : "口徑內 0 筆"}</span></div>
+      <span class="item-maker">${b.count ? b.count + " 筆／" + b.money : "這兩類裁罰 0 筆"}</span></div>
       <div class="panel-actions" style="margin-top:8px;justify-content:flex-start">
         <button class="btn quiet" data-view="${b.id}">再看一眼</button>
         <button class="btn primary" data-pick="${b.id}">供這籃</button>
@@ -539,7 +539,7 @@ const RANKS = [
    max:"最大單筆 1 萬元——未依許可文件登記事項運作",
    goods:"乖乖、孔雀餅乾、孔雀捲心餅"},
   {m:"味全食品", n:1, total:"1 萬元", amt:10000,
-   max:"最大單筆 1 萬元——設備保養停電，監測數據不足",
+   max:"最大單筆 1 萬元——設備保養停電，監測數據不足。另：所屬頂新集團 2014 年劣質油品事件屬食安紀錄，不在本統計",
    goods:"林鳳營、貝納頌咖啡、木崗雞蛋"}
 ];
 const ZEROS = "愛之味、味丹企業（味味A、多喝水）、聯華食品工業（卡迪那、可樂果）、光泉牧場、名牌食品（悅氏）、金門酒廠";
@@ -569,7 +569,7 @@ function finish(id){
     </div>`;
   }).join("");
   document.getElementById("zero-block").innerHTML =
-    `<b>同期間零裁罰（口徑內）</b>：${ZEROS}`;
+    `<b>同期間這兩類裁罰為零</b>：${ZEROS}`;
   show("s-end");
   window.scrollTo({top:0});
 }
