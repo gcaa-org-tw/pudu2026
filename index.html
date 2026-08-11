@@ -161,6 +161,17 @@ a{color:var(--gold)}
 .seg.only{border-radius:4px}
 .bar-val{font-size:13px;color:var(--ink);margin-left:6px;white-space:nowrap}
 .zero-note{font-size:13px;color:var(--muted)}
+.rank-row{border-top:1px dashed var(--line);padding:10px 0 6px}
+.rank-row:first-child{border-top:none;padding-top:0}
+.rank-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14.5px}
+.rank-head b{font-weight:600}
+.rank-head span{color:var(--muted);font-size:13px;white-space:nowrap}
+.rank-bar{display:flex;align-items:center;gap:2px;height:18px;margin:4px 0 2px}
+.rank-bar .seg{background:var(--air)}
+.rank-detail{font-size:13px;color:var(--muted);line-height:1.65}
+.rank-detail b{color:var(--ink);font-weight:600}
+.zero-block{border-top:1px solid var(--line);margin-top:12px;padding:10px 0;font-size:13.5px;color:var(--muted)}
+.zero-block b{color:var(--ink);font-weight:600}
 details.tbl{max-width:640px;margin:0 auto;font-size:13px;color:var(--muted)}
 details.tbl summary{cursor:pointer;padding:6px 0}
 details.tbl table{width:100%;border-collapse:collapse;margin-top:4px}
@@ -218,23 +229,11 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 <section class="screen" id="s-end">
   <div class="verdict" id="verdict"></div>
   <div class="chart">
-    <h3>三籃紀錄，一次揭曉</h3>
-    <p class="sub">各籃製造商 2024 年以來的水污染與固定空污裁罰筆數（標註金額合計）</p>
-    <div class="legend">
-      <span><i style="background:var(--water)"></i>水污染</span>
-      <span><i style="background:var(--air)"></i>固定空污</span>
-    </div>
+    <h3>製造商罰款排行</h3>
+    <p class="sub">遊戲內十五家製造商，2024 年以來水污染與固定空污裁罰金額由高到低</p>
     <div id="bars"></div>
+    <div class="zero-block" id="zero-block"></div>
   </div>
-  <details class="tbl">
-    <summary>以表格檢視</summary>
-    <table>
-      <tr><th>禮包</th><th>水污染</th><th>固定空污</th><th>合計筆數</th><th>金額</th></tr>
-      <tr><td>澎湃大禮包</td><td>13</td><td>9</td><td>22</td><td>1,803.8 萬元</td></tr>
-      <tr><td>招牌大禮包</td><td>7</td><td>0</td><td>7</td><td>125.15 萬元</td></tr>
-      <tr><td>圓滿大禮包</td><td>0</td><td>0</td><td>0</td><td>0 元</td></tr>
-    </table>
-  </details>
   <div class="cta">
     <h3>下次採買，先掃再買</h3>
     <p>供品的差別不在包裝，在製造它的工廠。<br>掃一下條碼，商品背後的公司和它的環境紀錄，當場看得到；<br>點「我也要+1」，你的訊息會直接送到企業面前。</p>
@@ -452,6 +451,37 @@ function renderChoose(){
   window.scrollTo({top:0});
 }
 
+const RANKS = [
+  {m:"泰山企業", n:5, total:"663.8 萬元", amt:6638000,
+   max:"最大單筆 302.4 萬元——殺菌釜廢水繞流排放，放流口查獲食品及果粒殘渣（情節重大，訴願駁回）",
+   goods:"泰山八寶粥、仙草蜜、泰山純水、Cheers 氣泡水、健康好理由油品、再睡五分鐘瓶裝茶（代工）"},
+  {m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", n:4, total:"550.8 萬元", amt:5508000,
+   max:"最大單筆 514.8 萬元——凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍（情節重大）",
+   goods:"活益比菲多、植物の優、質立希臘式優格、優意思優格、純萃喝"},
+  {m:"台灣百事食品", n:3, total:"266.4 萬元", amt:2664000,
+   max:"最大單筆 217.8 萬元——放流口採樣化學需氧量超標 3.1 倍、懸浮固體超標 12.1 倍",
+   goods:"樂事、多力多滋、奇多"},
+  {m:"臺灣菸酒", n:6, total:"188.3 萬元", amt:1883000,
+   max:"最大單筆 150 萬元——竹南製瓶場窯爐粒狀污染物超標 17.3 倍（訴願駁回）",
+   goods:"台灣啤酒、紅標料理米酒、黑麥汁、75% 酒精、酒粕青春露"},
+  {m:"維力食品", n:4, total:"134.5 萬元", amt:1345000,
+   max:"最大單筆 67.5 萬元——異味複查不降反升，依空污法按次連續處罰",
+   goods:"維力炸醬麵、維力手打麵、張君雅小妹妹全系列、台酒花雕雞麵（代工）"},
+  {m:"華元食品", n:1, total:"73.45 萬元", amt:734500,
+   max:"最大單筆 73.45 萬元——廢水調整池馬達故障，白色廢水溢流到廠外水溝",
+   goods:"波的多、咔辣姆久、真魷味、甜卡力"},
+  {m:"統一企業", n:4, total:"49.7 萬元", amt:497000,
+   max:"最大單筆 21.6 萬元——楊梅廠放流水懸浮固體超標；另有湖口廠管線破裂污染北勢溪",
+   goods:"統一肉燥麵、科學麵、麥香、茶裏王、瑞穗鮮乳、統一布丁"},
+  {m:"乖乖公司", n:1, total:"1 萬元", amt:10000,
+   max:"最大單筆 1 萬元——未依許可文件登記事項運作",
+   goods:"乖乖、孔雀餅乾、孔雀捲心餅"},
+  {m:"味全食品", n:1, total:"1 萬元", amt:10000,
+   max:"最大單筆 1 萬元——設備保養停電，監測數據不足",
+   goods:"林鳳營、貝納頌咖啡、木崗雞蛋"}
+];
+const ZEROS = "愛之味、味丹企業（味味A、多喝水）、聯華食品工業（卡迪那、可樂果）、光泉牧場、名牌食品（悅氏）、金門酒廠";
+
 const VERDICTS = {
   a:{t:"這籃很澎湃，紀錄也很澎湃",
      d:"五家製造商，2024 年以來共 22 筆水污染與固定空污裁罰、金額 1,803.8 萬元——包括凌晨查獲的偷排，和晴天繞流的廢水。心意很重，附帶的東西也是。"},
@@ -467,22 +497,17 @@ function finish(id){
     <span class="eyebrow">你供上了「${DATA.find(x=>x.id===id).name}」</span>
     <h2>${v.t}</h2><p>${v.d}</p>`;
   const bars = document.getElementById("bars");
-  const max = Math.max(...DATA.map(b=>b.count));
-  bars.innerHTML = DATA.map(b=>{
-    const wPct = b.water / max * 100, aPct = b.air / max * 100;
-    let segs = "";
-    if(b.water && b.air){
-      segs = `<div class="seg water first" style="width:${wPct*0.55}%"></div><div class="seg air last" style="width:${aPct*0.55}%"></div>`;
-    } else if(b.water){
-      segs = `<div class="seg water only" style="width:${wPct*0.55}%"></div>`;
-    } else if(b.air){
-      segs = `<div class="seg air only" style="width:${aPct*0.55}%"></div>`;
-    }
-    const val = b.count ? `<span class="bar-val">${b.count} 筆｜${b.money}</span>` : `<span class="zero-note">0 筆——這就是差別</span>`;
-    const mark = b.id===id ? "（你選的）" : "";
-    return `<div class="row-label"><b>${b.name}${mark}</b></div>
-      <div class="bar-track">${segs}${val}</div>`;
+  const maxAmt = Math.max(...RANKS.map(r=>r.amt));
+  bars.innerHTML = RANKS.map((r,i)=>{
+    const w = r.amt / maxAmt * 62;
+    return `<div class="rank-row">
+      <div class="rank-head"><b>${i+1}. ${r.m}</b><span>${r.n} 筆</span></div>
+      <div class="rank-bar"><div class="seg only" style="width:${w}%"></div><span class="bar-val">${r.total}</span></div>
+      <div class="rank-detail">${r.max}<br><b>關聯商品</b>：${r.goods}</div>
+    </div>`;
   }).join("");
+  document.getElementById("zero-block").innerHTML =
+    `<b>同期間零裁罰（口徑內）</b>：${ZEROS}`;
   show("s-end");
   window.scrollTo({top:0});
 }
