@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一張環境罰單，罰多少錢？</title>
+<style>
+:root{
+  --surface:#fcfcfb; --page:#f9f9f7;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --ring:rgba(11,11,11,.10);
+  --c-all:#e34948; --c-water:#2a78d6; --c-air:#b07800;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--page);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:20px 14px 26px}
+header h1{font-size:1.35rem;font-weight:700;letter-spacing:.01em}
+header p{color:var(--ink-2);font-size:.85rem;margin-top:5px;line-height:1.55}
+.seg{display:flex;gap:8px;margin:16px 0 14px;flex-wrap:wrap}
+.seg button{display:inline-flex;align-items:center;gap:7px;
+  font:inherit;font-size:.85rem;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--ring);border-radius:999px;
+  padding:7px 14px;cursor:pointer}
+.seg button .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.seg button[aria-pressed="true"]{color:var(--ink);font-weight:700;
+  border-color:currentColor}
+.seg button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:10px;
+  padding:10px 12px}
+.tile .lb{font-size:.72rem;color:var(--muted)}
+.tile .v{font-size:1.25rem;font-weight:600;margin-top:2px}
+.insight{color:var(--ink-2);font-size:.83rem;margin:12px 2px 6px;line-height:1.6}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:12px;
+  padding:16px 14px 10px;margin-top:6px}
+.scroller{overflow-x:auto}
+.chart{min-width:600px;position:relative}
+.plot{display:flex;align-items:flex-end;height:250px;position:relative;
+  margin-left:40px;border-bottom:1px solid var(--axis)}
+.gridline{position:absolute;left:0;right:0;height:1px;background:var(--grid)}
+.ytick{position:absolute;right:calc(100% + 6px);transform:translateY(-50%);
+  font-size:.7rem;color:var(--muted);font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.band{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;
+  position:relative;cursor:default}
+.bar{width:24px;max-width:60%;border-radius:4px 4px 0 0;
+  background:var(--c-all);transition:height .35s ease,background-color .35s ease}
+.band:hover .bar,.band:focus-visible .bar{filter:brightness(1.18)}
+.band:focus-visible{outline:2px solid var(--ink);outline-offset:-2px;border-radius:6px}
+.cap{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  margin-bottom:3px;font-size:.68rem;color:var(--ink-2);white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.cap.zero{color:var(--muted)}
+.xlabels{display:flex;margin-left:40px}
+.xlabels span{flex:1;text-align:center;font-size:.68rem;color:var(--muted);
+  padding-top:6px;line-height:1.3}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;
+  border-radius:8px;padding:8px 11px;font-size:.78rem;line-height:1.5;
+  white-space:nowrap;opacity:0;transition:opacity .12s;z-index:5;
+  transform:translate(-50%,-100%)}
+.tip .v{font-weight:700;font-size:.9rem}
+.tip.on{opacity:1}
+.foot{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+  margin-top:14px;flex-wrap:wrap}
+.note{color:var(--muted);font-size:.72rem;line-height:1.65;max-width:560px}
+.tbl-btn{font:inherit;font-size:.75rem;color:var(--ink-2);background:none;
+  border:1px solid var(--ring);border-radius:8px;padding:5px 10px;cursor:pointer;
+  flex:none}
+.tbl-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+table{border-collapse:collapse;font-size:.78rem;margin:12px 0 4px;width:100%;
+  font-variant-numeric:tabular-nums}
+caption{text-align:left;font-size:.75rem;color:var(--muted);padding-bottom:6px}
+th,td{border:1px solid var(--grid);padding:5px 9px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--page);font-weight:600;color:var(--ink-2)}
+[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.bar,.tip{transition:none}}
+@media (max-width:520px){
+  .stats{grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .tile .v{font-size:1.02rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>一張環境罰單，罰多少錢？</h1>
+  <p>2024 年以來 全台環境裁罰 110,827 筆的金額分布。點選類別切換，滑過長條看各區間筆數。</p>
+</header>
+<div class="seg" role="group" aria-label="裁罰類別">
+  <button type="button" data-view="all" aria-pressed="true"><span class="dot" style="background:var(--c-all)"></span>全部裁罰</button>
+  <button type="button" data-view="water" aria-pressed="false"><span class="dot" style="background:var(--c-water)"></span>水污染</button>
+  <button type="button" data-view="air" aria-pressed="false"><span class="dot" style="background:var(--c-air)"></span>固定空污</button>
+</div>
+<div class="stats">
+  <div class="tile"><div class="lb">裁罰筆數</div><div class="v" id="st-n"></div></div>
+  <div class="tile"><div class="lb">金額中位數</div><div class="v" id="st-med"></div></div>
+  <div class="tile"><div class="lb">最高單筆</div><div class="v" id="st-max"></div></div>
+</div>
+<p class="insight" id="insight"></p>
+<div class="card">
+  <div class="scroller">
+    <div class="chart">
+      <div class="plot" id="plot"></div>
+      <div class="xlabels" id="xlabels"></div>
+      <div class="tip" id="tip" role="status"></div>
+    </div>
+  </div>
+  <div class="foot">
+    <p class="note">「0 元」是勒令停工、停止營業、廢止許可證等未併科罰鍰的處分。金額分組為對數式，每格涵蓋的區間不等寬。資料來源：環境部列管事業裁處資料（ems_p_46），統計至 2026 年 8 月 6 日（最新一筆裁處日 2026-07-22）。製圖：綠色公民行動聯盟．透明足跡。</p>
+    <button type="button" class="tbl-btn" id="tbl-btn" aria-expanded="false">表格檢視</button>
+  </div>
+  <div id="tbl-wrap" hidden></div>
+</div>
+</div>
+<script>
+const DATA = {"labels": ["0元", "1千以下", "1千–5千", "5千–1萬", "1–5萬", "5–10萬", "10–50萬", "50–100萬", "100–500萬", "500–1,000萬", "逾1,000萬"], "views": {"all": {"name": "全部裁罰", "n": 110827, "nTxt": "110,827", "median": "2,000 元", "max": "1.42 億元", "insight": "一半的罰單不超過 2,000 元——小額案件以車輛排氣與一般廢棄物為大宗", "bins": [179, 36388, 41446, 14496, 8212, 5997, 3443, 326, 314, 19, 7], "pct": ["0.2%", "32.8%", "37.4%", "13.1%", "7.4%", "5.4%", "3.1%", "0.3%", "0.3%", "0.0%", "0.0%"], "yMax": 48000, "ticks": [{"v": 0, "label": "0"}, {"v": 10000, "label": "1萬"}, {"v": 20000, "label": "2萬"}, {"v": 30000, "label": "3萬"}, {"v": 40000, "label": "4萬"}]}, "water": {"name": "水污染", "n": 6698, "nTxt": "6,698", "median": "3 萬元", "max": "2,000 萬元", "insight": "最常見的金額是 3 萬元；5 千元以下的罰單只有 10 張", "bins": [68, 0, 10, 1742, 2580, 1267, 772, 83, 155, 17, 4], "pct": ["1.0%", "0.0%", "0.1%", "26.0%", "38.5%", "18.9%", "11.5%", "1.2%", "2.3%", "0.3%", "0.1%"], "yMax": 3000, "ticks": [{"v": 0, "label": "0"}, {"v": 1000, "label": "1,000"}, {"v": 2000, "label": "2,000"}, {"v": 3000, "label": "3,000"}]}, "air": {"name": "固定空污", "n": 3512, "nTxt": "3,512", "median": "12 萬元", "max": "630 萬元", "insight": "最常見的金額是 10 萬元，共 1,474 張", "bins": [35, 0, 96, 5, 64, 1481, 1574, 148, 108, 1, 0], "pct": ["1.0%", "0.0%", "2.7%", "0.1%", "1.8%", "42.2%", "44.8%", "4.2%", "3.1%", "0.0%", "0.0%"], "yMax": 1900, "ticks": [{"v": 0, "label": "0"}, {"v": 500, "label": "500"}, {"v": 1000, "label": "1,000"}, {"v": 1500, "label": "1,500"}]}}};
+const ORDER = ['all', 'water', 'air'];
+let cur = 'all';
+const plot = document.getElementById('plot');
+const tip = document.getElementById('tip');
+const xl = document.getElementById('xlabels');
+
+const v0 = DATA.views.all;
+v0.ticks.forEach(t => {
+  const y = (t.v / v0.yMax) * 100;
+  if (t.v > 0) {
+    const g = document.createElement('div');
+    g.className = 'gridline'; g.style.bottom = y + '%';
+    g.dataset.tick = ''; plot.appendChild(g);
+  }
+  const lb = document.createElement('span');
+  lb.className = 'ytick'; lb.style.bottom = y + '%';
+  lb.textContent = t.label; lb.dataset.tick = ''; plot.appendChild(lb);
+});
+
+DATA.labels.forEach((label, i) => {
+  const band = document.createElement('div');
+  band.className = 'band'; band.tabIndex = 0; band.dataset.i = i;
+  band.setAttribute('role', 'img');
+  const bar = document.createElement('div');
+  bar.className = 'bar'; band.appendChild(bar);
+  const cap = document.createElement('div');
+  cap.className = 'cap'; band.appendChild(cap);
+  plot.appendChild(band);
+  const x = document.createElement('span');
+  x.textContent = label; xl.appendChild(x);
+  band.addEventListener('pointerenter', () => showTip(band));
+  band.addEventListener('focus', () => showTip(band));
+  band.addEventListener('pointerleave', hideTip);
+  band.addEventListener('blur', hideTip);
+});
+
+function showTip(band) {
+  const i = +band.dataset.i;
+  const view = DATA.views[cur];
+  tip.textContent = '';
+  const l1 = document.createElement('div');
+  l1.className = 'v';
+  l1.textContent = view.bins[i].toLocaleString() + ' 筆（' + view.pct[i] + '）';
+  const l2 = document.createElement('div');
+  l2.textContent = DATA.labels[i] + '．' + view.name;
+  tip.append(l1, l2);
+  const br = band.getBoundingClientRect();
+  const cr = plot.parentElement.getBoundingClientRect();
+  const barH = Math.min(band.querySelector('.bar').getBoundingClientRect().height, br.height);
+  tip.style.left = (br.left - cr.left + br.width / 2) + 'px';
+  tip.style.top = (br.bottom - cr.top - barH - 30) + 'px';
+  tip.classList.add('on');
+}
+function hideTip() { tip.classList.remove('on'); }
+
+function render() {
+  const view = DATA.views[cur];
+  document.getElementById('st-n').textContent = view.nTxt;
+  document.getElementById('st-med').textContent = view.median;
+  document.getElementById('st-max').textContent = view.max;
+  document.getElementById('insight').textContent = view.insight;
+  plot.querySelectorAll('[data-tick]').forEach(el => el.remove());
+  view.ticks.forEach(t => {
+    const y = (t.v / view.yMax) * 100;
+    if (t.v > 0) {
+      const g = document.createElement('div');
+      g.className = 'gridline'; g.style.bottom = y + '%';
+      g.dataset.tick = ''; plot.insertBefore(g, plot.firstChild);
+    }
+    const lb = document.createElement('span');
+    lb.className = 'ytick'; lb.style.bottom = y + '%';
+    lb.textContent = t.label; lb.dataset.tick = '';
+    plot.insertBefore(lb, plot.firstChild);
+  });
+  const color = getComputedStyle(document.documentElement)
+    .getPropertyValue('--c-' + cur).trim();
+  plot.querySelectorAll('.band').forEach(band => {
+    const i = +band.dataset.i;
+    const c = view.bins[i];
+    const bar = band.querySelector('.bar');
+    const h = (c / view.yMax) * 100;
+    bar.style.height = c === 0 ? '0' : 'max(' + h + '%, 2px)';
+    bar.style.backgroundColor = color;
+    const cap = band.querySelector('.cap');
+    cap.textContent = c.toLocaleString();
+    cap.classList.toggle('zero', c === 0);
+    cap.style.bottom = c === 0 ? '0' : 'max(' + h + '%, 2px)';
+    band.setAttribute('aria-label',
+      view.name + '，' + DATA.labels[i] + '：' + c.toLocaleString() +
+      ' 筆，占 ' + view.pct[i]);
+  });
+}
+
+document.querySelectorAll('.seg button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    cur = btn.dataset.view;
+    document.querySelectorAll('.seg button').forEach(b =>
+      b.setAttribute('aria-pressed', String(b === btn)));
+    hideTip();
+    render();
+  });
+});
+
+const tblBtn = document.getElementById('tbl-btn');
+const tblWrap = document.getElementById('tbl-wrap');
+tblBtn.addEventListener('click', () => {
+  const open = tblWrap.hidden;
+  tblWrap.hidden = !open;
+  tblBtn.setAttribute('aria-expanded', String(open));
+  if (open && !tblWrap.firstChild) buildTable();
+});
+function buildTable() {
+  const tb = document.createElement('table');
+  const cap = document.createElement('caption');
+  cap.textContent = '各金額區間裁罰筆數';
+  tb.appendChild(cap);
+  const thead = document.createElement('thead');
+  const hr = document.createElement('tr');
+  ['金額區間', '全部裁罰', '水污染', '固定空污'].forEach(t => {
+    const th = document.createElement('th'); th.textContent = t; hr.appendChild(th);
+  });
+  thead.appendChild(hr); tb.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  DATA.labels.forEach((label, i) => {
+    const tr = document.createElement('tr');
+    const td0 = document.createElement('td'); td0.textContent = label;
+    tr.appendChild(td0);
+    ORDER.forEach(k => {
+      const td = document.createElement('td');
+      td.textContent = DATA.views[k].bins[i].toLocaleString();
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tb.appendChild(tbody); tblWrap.appendChild(tb);
+}
+
+render();
+</script>
+</body>
+</html>
