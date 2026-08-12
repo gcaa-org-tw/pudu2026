@@ -195,9 +195,9 @@ a{color:var(--gold)}
 .recap-row:first-child{border-top:none}
 .recap-p{font-weight:600}
 .recap-m{color:var(--muted);font-size:13.5px}
-.rank-row.mine{box-shadow:inset 3px 0 0 var(--gold);padding-left:12px}
-.mine-tag{display:inline-block;font-size:11.5px;font-weight:400;color:var(--night);background:var(--gold);border-radius:3px;padding:0 6px;margin-left:6px;letter-spacing:.05em;white-space:nowrap}
-.zero-block .zmine{color:var(--gold);font-weight:600}
+.rank-row.mine{background:rgba(216,169,61,.09);border-radius:8px;margin:0 -12px;padding:10px 12px 6px;border-top-color:transparent}
+.rank-row.mine + .rank-row{border-top-color:transparent}
+.zero-block .zmine{background:rgba(216,169,61,.16);border-radius:4px;padding:0 4px}
 .store-badge img{display:block;height:44px;width:auto}
 .store-badge.gp img{height:65px;margin:-10px}
 .cta .row{align-items:center}
@@ -652,7 +652,7 @@ function renderRanks(view){
     }
     const mine = chosenMakers && chosenMakers.has(x.r.m);
     return `<div class="rank-row${mine ? " mine" : ""}">
-      <div class="rank-head"><b>${i+1}. ${x.r.m}${mine ? '<span class="mine-tag">你供的這籃</span>' : ""}</b><span>${x.n} 筆</span></div>
+      <div class="rank-head"><b>${i+1}. ${x.r.m}</b><span>${x.n} 筆</span></div>
       <div class="rank-bar">${segs}<span class="bar-val">${fmtWan(x.amt)}</span></div>
       <div class="rank-detail">${x.r.d[view]}<br><b>關聯商品</b>：${x.r.goods}</div>
     </div>`;
