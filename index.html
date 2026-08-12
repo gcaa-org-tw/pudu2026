@@ -236,7 +236,7 @@ a{color:var(--gold)}
 .rank-detail b{color:var(--ink);font-weight:600}
 .zero-block{border-top:1px solid var(--line);margin-top:12px;padding:10px 0;font-size:13.5px;color:var(--muted)}
 .zero-block b{color:var(--ink);font-weight:600}
-.bridge{max-width:640px;margin:26px auto 12px;text-align:center;color:var(--muted);font-size:15px}
+.bridge-head{margin:38px auto 16px}
 .clean-card{margin-top:26px;padding-bottom:18px}
 .clean-lead{font-size:15px;margin-bottom:10px}
 .clean-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
@@ -385,7 +385,10 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 <section class="screen" id="s-end">
   <div class="verdict" id="verdict"></div>
   <div class="panel" id="recap"></div>
-  <p class="bridge">你選的這籃之外，供桌上還有另外兩籃——十五家製造商的紀錄，一次攤開。</p>
+  <div class="panel-head bridge-head">
+    <span class="eyebrow">你選的這籃之外，還有另外兩籃</span>
+    <h2>十五家製造商紀錄大公開</h2>
+  </div>
   <div class="chart">
     <h3>製造商罰款排行</h3>
     <p class="sub" id="rank-sub"></p>
