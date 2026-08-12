@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23B3282D'/%3E%3Crect x='5' y='5' width='54' height='54' rx='8' fill='none' stroke='%23D8A93D' stroke-width='3'/%3E%3Ctext x='32' y='47' font-size='40' font-weight='700' text-anchor='middle' font-family='Kaiti TC,BiauKai,DFKai-SB,serif' fill='%23F3E9D8'%3E%E6%99%AE%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Iansui&display=swap" rel="stylesheet">
 <style>
 :root{
   --night:#241811; --panel:#2B1D16; --card:#33241A; --line:#4A3625;
@@ -39,7 +39,7 @@ body{
     radial-gradient(420px 300px at 84% 10%, rgba(216,110,60,.13), transparent 70%);
 }
 .cover-title,.seal,.altar-head h2,.panel-head h2,.verdict h2,.cta h3,.btn,.eyebrow,.basket svg text{
-  font-family:"LXGW WenKai TC","Kaiti TC","BiauKai","DFKai-SB",serif;
+  font-family:"Iansui","Kaiti TC","BiauKai","DFKai-SB",serif;
 }
 .cover-title,.altar-head h2,.panel-head h2,.verdict h2,.cta h3,.seal{font-weight:700}
 .screen{position:relative;z-index:1;display:none;padding-top:32px}
@@ -190,6 +190,17 @@ a{color:var(--gold)}
 .rank-total b{color:var(--ink);font-size:17px;font-weight:900}
 #recap{margin-bottom:28px}
 #recap .panel-head{margin-top:6px}
+.recap-list{border:1px solid var(--line);border-radius:6px;background:var(--card);padding:4px 16px}
+.recap-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px dotted var(--line);flex-wrap:wrap;align-items:baseline}
+.recap-row:first-child{border-top:none}
+.recap-p{font-weight:600}
+.recap-m{color:var(--muted);font-size:13.5px}
+.rank-row.mine{box-shadow:inset 3px 0 0 var(--gold);padding-left:12px}
+.mine-tag{display:inline-block;font-size:11.5px;font-weight:400;color:var(--night);background:var(--gold);border-radius:3px;padding:0 6px;margin-left:6px;letter-spacing:.05em;white-space:nowrap}
+.zero-block .zmine{color:var(--gold);font-weight:600}
+.store-badge img{display:block;height:44px;width:auto}
+.store-badge.gp img{height:65px;margin:-10px}
+.cta .row{align-items:center}
 .rank-row{border-top:1px dashed var(--line);padding:10px 0 6px}
 .rank-row:first-child{border-top:none;padding-top:0}
 .rank-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14.5px}
@@ -271,11 +282,11 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
     <div class="zero-block" id="zero-block"></div>
   </div>
   <div class="cta">
-    <h3>下次採買，先掃再買</h3>
+    <h3>下次採買，掃了再買</h3>
     <p>供品百百種，製造廠差很大！<br>掃一下條碼，環境違規紀錄當場看得到；<br>點「我也要+1」，要求企業珍惜台灣好山好水。</p>
     <div class="row">
-      <a class="btn" href="https://play.google.com/store/apps/details?id=org.gcaa.tw.thaubingandroid" target="_blank" rel="noopener">Android 下載</a>
-      <a class="btn" href="https://apps.apple.com/tw/app/%E6%8E%83%E4%BA%86%E5%86%8D%E8%B2%B7/id1529327569" target="_blank" rel="noopener">iPhone 下載</a>
+      <a class="store-badge gp" href="https://play.google.com/store/apps/details?id=org.gcaa.tw.thaubingandroid" target="_blank" rel="noopener"><img src="https://play.google.com/intl/zh-tw/badges/static/images/badges/zh-tw_badge_web_generic.png" alt="Google Play 立即下載"></a>
+      <a class="store-badge" href="https://apps.apple.com/tw/app/%E6%8E%83%E4%BA%86%E5%86%8D%E8%B2%B7/id1529327569" target="_blank" rel="noopener"><img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-tw" alt="App Store 下載"></a>
       <a class="btn quiet" href="https://thaubing.gcaa.org.tw/" target="_blank" rel="noopener">認識透明足跡</a>
     </div>
   </div>
@@ -289,7 +300,7 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 const IMG = "https://thaubing.gcaa.org.tw/sites/default/files/product/";
 const DATA = [
   {
-    id:"a", name:"經典大禮包", tag:"老字號齊聚，體面十足",
+    id:"a", name:"澎湃大禮包", tag:"老字號齊聚，體面十足",
     water:13, air:9, count:22, money:"1,803.8 萬元",
     items:[
       {p:"泰山八寶粥", m:"泰山企業", lines:"泰山純水、Cheers 氣泡水、仙草蜜、健康好理由芥花油、再睡五分鐘瓶裝茶", img:"4710095987402_MTU4.jpg", water:2, air:3, money:"663.8 萬元",
@@ -585,7 +596,15 @@ const RANKS = [
       w:"最大單筆 1 萬元：設備保養停電，監測數據不足。另：所屬頂新集團 2014 年劣質油品事件屬食安紀錄，不在本統計"},
    goods:"林鳳營、貝納頌咖啡、木崗雞蛋"}
 ];
-const ZEROS = "愛之味、味丹企業（味味A、多喝水）、聯華食品工業（卡迪那、可樂果）、光泉牧場、名牌食品（悅氏）、金門酒廠";
+const ZEROS = [
+  {name:"愛之味", note:""},
+  {name:"味丹企業", note:"味味A、多喝水"},
+  {name:"聯華食品工業", note:"卡迪那、可樂果"},
+  {name:"光泉牧場", note:""},
+  {name:"名牌食品", note:"悅氏"},
+  {name:"金門酒廠", note:""}
+];
+let chosenMakers = null;
 const RANK_SUBS = {
   all:"遊戲內十五家製造商，2024 年以來水污染與固定空污裁罰金額由高到低",
   w:"遊戲內十五家製造商，2024 年以來水污染裁罰金額由高到低",
@@ -604,7 +623,9 @@ function renderRanks(view){
     return {r, n, amt};
   });
   const inView = rows.filter(x=>x.n>0).sort((x,y)=>y.amt-x.amt);
-  const zeroExtra = rows.filter(x=>x.n===0).map(x=>`${x.r.ms}（${x.r.goods.split("、")[0]}）`);
+  const zeroEntries = rows.filter(x=>x.n===0)
+    .map(x=>({label:`${x.r.ms}（${x.r.goods.split("、")[0]}）`, mine:chosenMakers && chosenMakers.has(x.r.m)}))
+    .concat(ZEROS.map(z=>({label:z.note ? `${z.name}（${z.note}）` : z.name, mine:chosenMakers && chosenMakers.has(z.name)})));
   const totN = inView.reduce((s,x)=>s+x.n,0);
   const totAmt = inView.reduce((s,x)=>s+x.amt,0);
   document.getElementById("rank-sub").textContent = RANK_SUBS[view];
@@ -629,14 +650,15 @@ function renderRanks(view){
     } else {
       segs = `<div class="seg ${view==="w"?"water":"air"} only" style="width:${w}%"></div>`;
     }
-    return `<div class="rank-row">
-      <div class="rank-head"><b>${i+1}. ${x.r.m}</b><span>${x.n} 筆</span></div>
+    const mine = chosenMakers && chosenMakers.has(x.r.m);
+    return `<div class="rank-row${mine ? " mine" : ""}">
+      <div class="rank-head"><b>${i+1}. ${x.r.m}${mine ? '<span class="mine-tag">你供的這籃</span>' : ""}</b><span>${x.n} 筆</span></div>
       <div class="rank-bar">${segs}<span class="bar-val">${fmtWan(x.amt)}</span></div>
       <div class="rank-detail">${x.r.d[view]}<br><b>關聯商品</b>：${x.r.goods}</div>
     </div>`;
   }).join("");
   document.getElementById("zero-block").innerHTML =
-    `<b>${ZERO_LABELS[view]}</b>：${zeroExtra.concat(ZEROS).join("、")}`;
+    `<b>${ZERO_LABELS[view]}</b>：${zeroEntries.map(z=>z.mine ? `<span class="zmine">${z.label}</span>` : z.label).join("、")}`;
 }
 
 function setRankView(view){
@@ -660,20 +682,16 @@ function finish(id){
   document.getElementById("verdict").innerHTML = `
     <span class="eyebrow">你供上了「${b.name}」</span>
     <h2>${v.t}</h2><p>${v.d}</p>`;
-  const sum = b.count
-    ? `<div class="basket-sum"><b>${b.count} 筆／${b.money}</b><span>籃內製造商 2024 年以來水污染與固定空污裁罰合計</span></div>`
-    : `<div class="basket-sum"><b>0 筆</b><span>籃內五家製造商 2024 年以來皆無水污染與固定空污裁罰</span></div>`;
   const recap = document.getElementById("recap");
   recap.innerHTML = `
     <div class="panel-head">
       <span class="eyebrow">這一籃供了什麼</span>
       <h2>${b.name}</h2>
-      <p>商品、製造商與 2024 年以來的裁罰紀錄</p>
     </div>
-    ${b.items.map((it,idx)=>itemHTML(b, it, idx, "e")).join("")}
-    ${sum}`;
-  bindChips(recap);
+    <div class="recap-list">${b.items.map(it=>
+      `<div class="recap-row"><span class="recap-p">${it.p}</span><span class="recap-m">${it.m}</span></div>`).join("")}</div>`;
   document.getElementById("panel").innerHTML = "";
+  chosenMakers = new Set(b.items.map(it=>it.m));
   setRankView("all");
   show("s-end");
   window.scrollTo({top:0});
