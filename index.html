@@ -28,7 +28,7 @@
 html{-webkit-text-size-adjust:100%}
 body{
   background:var(--night); color:var(--ink);
-  font-family:"Iansui","Kaiti TC","BiauKai","DFKai-SB","Noto Serif TC",serif;
+  font-family:"Times New Roman",Times,"Iansui","Kaiti TC","BiauKai","DFKai-SB","Noto Serif TC",serif;
   line-height:1.75; font-size:16px;
 }
 .stage{max-width:760px;margin:0 auto;padding:0 20px 48px;position:relative;min-height:100svh}
@@ -39,7 +39,7 @@ body{
     radial-gradient(420px 300px at 84% 10%, rgba(216,110,60,.13), transparent 70%);
 }
 .cover-title,.seal,.altar-head h2,.panel-head h2,.verdict h2,.cta h3,.btn,.eyebrow,.basket svg text{
-  font-family:"Iansui","Kaiti TC","BiauKai","DFKai-SB",serif;
+  font-family:"Times New Roman",Times,"Iansui","Kaiti TC","BiauKai","DFKai-SB",serif;
 }
 .cover-title,.altar-head h2,.panel-head h2,.verdict h2,.cta h3,.seal{font-weight:700}
 .screen{position:relative;z-index:1;display:none;padding-top:32px}
@@ -211,6 +211,15 @@ a{color:var(--gold)}
 .rank-detail b{color:var(--ink);font-weight:600}
 .zero-block{border-top:1px solid var(--line);margin-top:12px;padding:10px 0;font-size:13.5px;color:var(--muted)}
 .zero-block b{color:var(--ink);font-weight:600}
+.bridge{max-width:640px;margin:26px auto 12px;text-align:center;color:var(--muted);font-size:15px}
+.clean-card{margin-top:26px;padding-bottom:18px}
+.clean-lead{font-size:15px;margin-bottom:10px}
+.clean-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.clean-tbl th,.clean-tbl td{border:1px solid var(--line);padding:5px 10px;text-align:left}
+.clean-tbl th{color:var(--muted);font-weight:600}
+.clean-tbl td:first-child{white-space:nowrap;font-weight:600}
+.clean-tbl td:last-child{color:var(--muted)}
+.clean-tbl tr.mine td{background:rgba(216,169,61,.09)}
 details.tbl{max-width:640px;margin:0 auto;font-size:13px;color:var(--muted)}
 details.tbl summary{cursor:pointer;padding:6px 0}
 details.tbl table{width:100%;border-collapse:collapse;margin-top:4px}
@@ -268,6 +277,7 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 <section class="screen" id="s-end">
   <div class="verdict" id="verdict"></div>
   <div class="panel" id="recap"></div>
+  <p class="bridge">你選的這籃之外，供桌上還有另外兩籃——十五家製造商的紀錄，一次攤開。</p>
   <div class="chart">
     <h3>製造商罰款排行</h3>
     <p class="sub" id="rank-sub"></p>
@@ -280,6 +290,26 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
     <div class="legend" id="rank-legend"></div>
     <div id="bars"></div>
     <div class="zero-block" id="zero-block"></div>
+  </div>
+  <div class="chart clean-card">
+    <p class="clean-lead">同期間這些品牌製造商無空、水污違規裁罰：</p>
+    <table class="clean-tbl">
+      <thead><tr><th>製造商</th><th>關聯商品</th></tr></thead>
+      <tbody>
+        <tr data-m="愛之味"><td>愛之味</td><td>甜八寶、牛奶花生、分解茶、純濃燕麥</td></tr>
+        <tr data-m="味丹企業"><td>味丹企業</td><td>味味A、雙響泡、多喝水</td></tr>
+        <tr data-m="味王"><td>味王</td><td>王子麵、味王原汁牛肉麵、味王味精</td></tr>
+        <tr data-m="聯華食品工業"><td>聯華食品工業</td><td>卡迪那、可樂果、元本山、萬歲牌</td></tr>
+        <tr data-m="光泉牧場"><td>光泉牧場</td><td>光泉鮮乳、乳香世家、光泉豆漿</td></tr>
+        <tr data-m="名牌食品"><td>名牌食品</td><td>悅氏礦泉水、悅氏鹼性水</td></tr>
+        <tr data-m="義美食品"><td>義美食品</td><td>小泡芙、義美牛乳、義美豆奶</td></tr>
+        <tr data-m="養樂多"><td>養樂多</td><td>養樂多、養樂多全脂鮮乳</td></tr>
+        <tr data-m="裕榮食品"><td>裕榮食品</td><td>蝦味先、燒番麥</td></tr>
+        <tr data-m="臺鹽實業"><td>臺鹽實業</td><td>海洋鹼性離子水、台鹽牙膏</td></tr>
+        <tr data-m="金車"><td>金車</td><td>伯朗咖啡、波爾天然水、奧利多</td></tr>
+        <tr data-m="金門酒廠"><td>金門酒廠</td><td>金門高粱酒系列</td></tr>
+      </tbody>
+    </table>
   </div>
   <div class="cta">
     <h3>下次採買，掃了再買</h3>
@@ -596,21 +626,13 @@ const RANKS = [
       w:"最大單筆 1 萬元：設備保養停電，監測數據不足。另：所屬頂新集團 2014 年劣質油品事件屬食安紀錄，不在本統計"},
    goods:"林鳳營、貝納頌咖啡、木崗雞蛋"}
 ];
-const ZEROS = [
-  {name:"愛之味", note:""},
-  {name:"味丹企業", note:"味味A、多喝水"},
-  {name:"聯華食品工業", note:"卡迪那、可樂果"},
-  {name:"光泉牧場", note:""},
-  {name:"名牌食品", note:"悅氏"},
-  {name:"金門酒廠", note:""}
-];
 let chosenMakers = null;
 const RANK_SUBS = {
-  all:"遊戲內十五家製造商，2024 年以來水污染與固定空污裁罰金額由高到低",
-  w:"遊戲內十五家製造商，2024 年以來水污染裁罰金額由高到低",
-  a:"遊戲內十五家製造商，2024 年以來固定空污裁罰金額由高到低"
+  all:"遊戲內有裁罰紀錄的製造商，2024 年以來水污染與固定空污裁罰金額由高到低",
+  w:"遊戲內有裁罰紀錄的製造商，2024 年以來水污染裁罰金額由高到低",
+  a:"遊戲內有裁罰紀錄的製造商，2024 年以來固定空污裁罰金額由高到低"
 };
-const ZERO_LABELS = {all:"2024-2026 期間無空水污裁罰紀錄", w:"2024-2026 期間無水污染裁罰紀錄", a:"2024-2026 期間無固定空污裁罰紀錄"};
+const ZERO_LABELS = {w:"同期間無水污染裁罰", a:"同期間無固定空污裁罰"};
 
 function fmtWan(amt){
   return (amt/1e4).toLocaleString("zh-TW",{maximumFractionDigits:2}) + " 萬元";
@@ -624,13 +646,12 @@ function renderRanks(view){
   });
   const inView = rows.filter(x=>x.n>0).sort((x,y)=>y.amt-x.amt);
   const zeroEntries = rows.filter(x=>x.n===0)
-    .map(x=>({label:`${x.r.ms}（${x.r.goods.split("、")[0]}）`, mine:chosenMakers && chosenMakers.has(x.r.m)}))
-    .concat(ZEROS.map(z=>({label:z.note ? `${z.name}（${z.note}）` : z.name, mine:chosenMakers && chosenMakers.has(z.name)})));
+    .map(x=>({label:`${x.r.ms}（${x.r.goods.split("、")[0]}）`, mine:chosenMakers && chosenMakers.has(x.r.m)}));
   const totN = inView.reduce((s,x)=>s+x.n,0);
   const totAmt = inView.reduce((s,x)=>s+x.amt,0);
   document.getElementById("rank-sub").textContent = RANK_SUBS[view];
   document.getElementById("rank-total").innerHTML =
-    `<span>十五家製造商合計</span><b>${totN} 筆／${fmtWan(totAmt)}</b>`;
+    `<span>${inView.length} 家有紀錄，合計</span><b>${totN} 筆／${fmtWan(totAmt)}</b>`;
   const lg = document.getElementById("rank-legend");
   lg.style.display = view==="all" ? "" : "none";
   lg.innerHTML = view==="all"
@@ -657,8 +678,14 @@ function renderRanks(view){
       <div class="rank-detail">${x.r.d[view]}<br><b>關聯商品</b>：${x.r.goods}</div>
     </div>`;
   }).join("");
-  document.getElementById("zero-block").innerHTML =
-    `<b>${ZERO_LABELS[view]}</b>：${zeroEntries.map(z=>z.mine ? `<span class="zmine">${z.label}</span>` : z.label).join("、")}`;
+  const zb = document.getElementById("zero-block");
+  if(view === "all" || zeroEntries.length === 0){
+    zb.style.display = "none";
+    zb.innerHTML = "";
+  } else {
+    zb.style.display = "";
+    zb.innerHTML = `<b>${ZERO_LABELS[view]}</b>：${zeroEntries.map(z=>z.mine ? `<span class="zmine">${z.label}</span>` : z.label).join("、")}`;
+  }
 }
 
 function setRankView(view){
@@ -692,6 +719,8 @@ function finish(id){
       `<div class="recap-row"><span class="recap-p">${it.p}</span><span class="recap-m">${it.m}</span></div>`).join("")}</div>`;
   document.getElementById("panel").innerHTML = "";
   chosenMakers = new Set(b.items.map(it=>it.m));
+  document.querySelectorAll(".clean-tbl tr[data-m]").forEach(tr=>
+    tr.classList.toggle("mine", chosenMakers.has(tr.dataset.m)));
   setRankView("all");
   show("s-end");
   window.scrollTo({top:0});
