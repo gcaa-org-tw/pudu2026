@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>今年普渡，你選哪一籃？｜掃了再買</title>
+<title>普渡好自然</title>
 <meta property="og:title" content="今年普渡，你選哪一籃？">
 <meta property="og:description" content="供桌上三籃大禮包，都蓋著紅布。掀開來看看——哪一籃，最對得起好兄弟。掃了再買 × 透明足跡。">
 <meta property="og:type" content="website">
@@ -12,9 +12,10 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23B3282D'/%3E%3Crect x='5' y='5' width='54' height='54' rx='8' fill='none' stroke='%23D8A93D' stroke-width='3'/%3E%3Ctext x='32' y='47' font-size='40' font-weight='700' text-anchor='middle' font-family='Kaiti TC,BiauKai,DFKai-SB,serif' fill='%23F3E9D8'%3E%E6%99%AE%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --night:#241811; --panel:#2B1D16; --card:#33241A; --line:#4A3625;
@@ -37,6 +38,10 @@ body{
     radial-gradient(420px 300px at 18% 6%, rgba(216,110,60,.16), transparent 70%),
     radial-gradient(420px 300px at 84% 10%, rgba(216,110,60,.13), transparent 70%);
 }
+.cover-title,.seal,.altar-head h2,.panel-head h2,.verdict h2,.cta h3,.btn,.eyebrow,.basket svg text{
+  font-family:"LXGW WenKai TC","Kaiti TC","BiauKai","DFKai-SB",serif;
+}
+.cover-title,.altar-head h2,.panel-head h2,.verdict h2,.cta h3,.seal{font-weight:700}
 .screen{position:relative;z-index:1;display:none;padding-top:32px}
 .screen.on{display:block}
 button{font:inherit;cursor:pointer}
@@ -173,13 +178,24 @@ a{color:var(--gold)}
 .seg.only{border-radius:4px}
 .bar-val{font-size:13px;color:var(--ink);margin-left:6px;white-space:nowrap}
 .zero-note{font-size:13px;color:var(--muted)}
+.rank-toggle{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.rank-toggle button{
+  border:1px solid var(--line);background:transparent;color:var(--muted);
+  border-radius:99px;padding:2px 14px;font-size:13.5px;letter-spacing:.08em;
+  transition:color .2s,border-color .2s;
+}
+.rank-toggle button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
+.rank-total{border:1px solid var(--gold);border-radius:6px;padding:8px 12px;margin-bottom:12px;
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;font-size:14px;color:var(--muted)}
+.rank-total b{color:var(--ink);font-size:17px;font-weight:900}
+#recap{margin-bottom:28px}
+#recap .panel-head{margin-top:6px}
 .rank-row{border-top:1px dashed var(--line);padding:10px 0 6px}
 .rank-row:first-child{border-top:none;padding-top:0}
 .rank-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14.5px}
 .rank-head b{font-weight:600}
 .rank-head span{color:var(--muted);font-size:13px;white-space:nowrap}
 .rank-bar{display:flex;align-items:center;gap:2px;height:18px;margin:4px 0 2px}
-.rank-bar .seg{background:var(--air)}
 .rank-detail{font-size:13px;color:var(--muted);line-height:1.65}
 .rank-detail b{color:var(--ink);font-weight:600}
 .zero-block{border-top:1px solid var(--line);margin-top:12px;padding:10px 0;font-size:13.5px;color:var(--muted)}
@@ -240,9 +256,17 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 
 <section class="screen" id="s-end">
   <div class="verdict" id="verdict"></div>
+  <div class="panel" id="recap"></div>
   <div class="chart">
     <h3>製造商罰款排行</h3>
-    <p class="sub">遊戲內十五家製造商，2024 年以來水污染與固定空污裁罰金額由高到低</p>
+    <p class="sub" id="rank-sub"></p>
+    <div class="rank-toggle" id="rank-toggle" role="group" aria-label="裁罰類型切換">
+      <button data-view="all" aria-pressed="true">全體</button>
+      <button data-view="w" aria-pressed="false">水污染</button>
+      <button data-view="a" aria-pressed="false">固定空污</button>
+    </div>
+    <div class="rank-total" id="rank-total"></div>
+    <div class="legend" id="rank-legend"></div>
     <div id="bars"></div>
     <div class="zero-block" id="zero-block"></div>
   </div>
@@ -424,31 +448,43 @@ function chipRow(w, a){
   return h;
 }
 
+function itemHTML(b, it, idx, prefix){
+  const stat = (it.water||it.air)
+    ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
+  const fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
+  const ln = it.lines ? `<div class="item-lines"><b>這家公司還做</b>：${it.lines}</div>` : "";
+  const im = it.img ? `<img class="item-img" src="${IMG}${it.img}" alt="${it.p}" loading="lazy">` : "";
+  const key = `${prefix}-${b.id}-${idx}`;
+  const chips = it.recs
+    ? `<button class="chips-btn" aria-expanded="false" data-recs="${key}">${chipRow(it.water, it.air)}<span class="hint">點開逐筆紀錄</span></button>
+       <div class="recs" id="recs-${key}" hidden>${it.recs.map(r=>
+         `<div class="rec"><span class="rec-d">${r[0]}</span><span class="rec-m">${r[1]}</span><span class="rec-f">${r[2]}</span></div>`).join("")}</div>`
+    : `<div class="chips">${chipRow(it.water, it.air)}</div>`;
+  return `<div class="item">
+    <div class="item-wrap">${im}<div class="item-main">
+    <div class="item-top"><span class="item-name">${it.p}</span><span class="item-maker">製造商：${it.m}</span></div>
+    ${ln}
+    ${chips}
+    ${stat}${fact}
+    </div></div>
+  </div>`;
+}
+
+function bindChips(root){
+  root.querySelectorAll(".chips-btn").forEach(btn=>btn.addEventListener("click", ()=>{
+    const recs = root.querySelector("#recs-"+btn.dataset.recs);
+    const open = btn.getAttribute("aria-expanded")==="true";
+    btn.setAttribute("aria-expanded", String(!open));
+    recs.hidden = open;
+  }));
+}
+
 function openBasket(id){
   current = id;
   viewed.add(id);
   const b = DATA.find(x=>x.id===id);
   const p = document.getElementById("panel");
-  const items = b.items.map((it,idx)=>{
-    const stat = (it.water||it.air)
-      ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
-    const fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
-    const ln = it.lines ? `<div class="item-lines"><b>這家公司還做</b>：${it.lines}</div>` : "";
-    const im = it.img ? `<img class="item-img" src="${IMG}${it.img}" alt="${it.p}" loading="lazy">` : "";
-    const chips = it.recs
-      ? `<button class="chips-btn" aria-expanded="false" data-recs="${b.id}-${idx}">${chipRow(it.water, it.air)}<span class="hint">點開逐筆紀錄</span></button>
-         <div class="recs" id="recs-${b.id}-${idx}" hidden>${it.recs.map(r=>
-           `<div class="rec"><span class="rec-d">${r[0]}</span><span class="rec-m">${r[1]}</span><span class="rec-f">${r[2]}</span></div>`).join("")}</div>`
-      : `<div class="chips">${chipRow(it.water, it.air)}</div>`;
-    return `<div class="item">
-      <div class="item-wrap">${im}<div class="item-main">
-      <div class="item-top"><span class="item-name">${it.p}</span><span class="item-maker">製造商：${it.m}</span></div>
-      ${ln}
-      ${chips}
-      ${stat}${fact}
-      </div></div>
-    </div>`;
-  }).join("");
+  const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p")).join("");
   const sum = b.count
     ? `<div class="basket-sum"><b>${b.count} 筆／${b.money}</b><span>籃內製造商 2024 年以來水污染與固定空污裁罰合計</span></div>`
     : `<div class="basket-sum"><b>0 筆</b><span>籃內五家製造商 2024 年以來皆無水污染與固定空污裁罰</span></div>`;
@@ -470,12 +506,7 @@ function openBasket(id){
         <button class="btn" id="btn-sure">心意已決</button>
       </div>
     </div>`;
-  p.querySelectorAll(".chips-btn").forEach(btn=>btn.addEventListener("click", ()=>{
-    const recs = document.getElementById("recs-"+btn.dataset.recs);
-    const open = btn.getAttribute("aria-expanded")==="true";
-    btn.setAttribute("aria-expanded", String(!open));
-    recs.hidden = open;
-  }));
+  bindChips(p);
   document.getElementById("btn-back").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
   document.getElementById("btn-offer").addEventListener("click", ()=>{
     if(viewed.size < 3){
@@ -514,35 +545,104 @@ function renderChoose(){
 }
 
 const RANKS = [
-  {m:"泰山企業", n:5, total:"663.8 萬元", amt:6638000,
-   max:"最大單筆 302.4 萬元——殺菌釜廢水繞流排放，放流口查獲食品及果粒殘渣（情節重大，訴願駁回）",
+  {m:"泰山企業", ms:"泰山企業", w:{n:2, amt:6048000}, a:{n:3, amt:590000},
+   d:{all:"最大單筆 302.4 萬元——殺菌釜廢水繞流排放，放流口查獲食品及果粒殘渣（情節重大，訴願駁回）",
+      w:"最大單筆 302.4 萬元——殺菌釜廢水繞流排放，放流口查獲食品及果粒殘渣（情節重大，訴願駁回）",
+      a:"最大單筆 27 萬元——鍋爐戴奧辛排放超標（0.774，標準 0.5）"},
    goods:"泰山八寶粥、仙草蜜、泰山純水、Cheers 氣泡水、健康好理由油品、再睡五分鐘瓶裝茶（代工）"},
-  {m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", n:4, total:"550.8 萬元", amt:5508000,
-   max:"最大單筆 514.8 萬元——凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍（情節重大）",
+  {m:"分享家食品（比菲多集團，原名台灣比菲多醱酵）", ms:"分享家食品", w:{n:4, amt:5508000}, a:{n:0, amt:0},
+   d:{all:"最大單筆 514.8 萬元——凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍（情節重大）",
+      w:"最大單筆 514.8 萬元——凌晨稽查查獲軟管繞流偷排，化學需氧量超標 14.9 倍（情節重大）"},
    goods:"活益比菲多、植物の優、質立希臘式優格、優意思優格、純萃喝"},
-  {m:"台灣百事食品", n:3, total:"266.4 萬元", amt:2664000,
-   max:"最大單筆 217.8 萬元——放流口採樣化學需氧量超標 3.1 倍、懸浮固體超標 12.1 倍",
+  {m:"台灣百事食品", ms:"台灣百事食品", w:{n:3, amt:2664000}, a:{n:0, amt:0},
+   d:{all:"最大單筆 217.8 萬元——放流口採樣化學需氧量超標 3.1 倍、懸浮固體超標 12.1 倍",
+      w:"最大單筆 217.8 萬元——放流口採樣化學需氧量超標 3.1 倍、懸浮固體超標 12.1 倍"},
    goods:"樂事、多力多滋、奇多"},
-  {m:"臺灣菸酒", n:6, total:"188.3 萬元", amt:1883000,
-   max:"最大單筆 150 萬元——竹南製瓶場窯爐粒狀污染物超標 17.3 倍（訴願駁回）",
+  {m:"臺灣菸酒", ms:"臺灣菸酒", w:{n:3, amt:183000}, a:{n:3, amt:1700000},
+   d:{all:"最大單筆 150 萬元——竹南製瓶場窯爐粒狀污染物超標 17.3 倍（訴願駁回）",
+      w:"最大單筆 6.3 萬元——用水量連三個月超過許可",
+      a:"最大單筆 150 萬元——竹南製瓶場窯爐粒狀污染物超標 17.3 倍（訴願駁回）"},
    goods:"台灣啤酒、紅標料理米酒、黑麥汁、75% 酒精、酒粕青春露"},
-  {m:"維力食品", n:4, total:"134.5 萬元", amt:1345000,
-   max:"最大單筆 67.5 萬元——異味複查不降反升，依空污法按次連續處罰",
+  {m:"維力食品", ms:"維力食品", w:{n:0, amt:0}, a:{n:4, amt:1345000},
+   d:{all:"最大單筆 67.5 萬元——異味複查不降反升，依空污法按次連續處罰",
+      a:"最大單筆 67.5 萬元——異味複查不降反升，依空污法按次連續處罰"},
    goods:"維力炸醬麵、維力手打麵、張君雅小妹妹全系列、台酒花雕雞麵（代工）"},
-  {m:"華元食品", n:1, total:"73.45 萬元", amt:734500,
-   max:"最大單筆 73.45 萬元——廢水調整池馬達故障，白色廢水溢流到廠外水溝",
+  {m:"華元食品", ms:"華元食品", w:{n:1, amt:734500}, a:{n:0, amt:0},
+   d:{all:"最大單筆 73.45 萬元——廢水調整池馬達故障，白色廢水溢流到廠外水溝",
+      w:"最大單筆 73.45 萬元——廢水調整池馬達故障，白色廢水溢流到廠外水溝"},
    goods:"波的多、咔辣姆久、真魷味、甜卡力"},
-  {m:"統一企業", n:4, total:"49.7 萬元", amt:497000,
-   max:"最大單筆 21.6 萬元——楊梅廠放流水懸浮固體超標；另有湖口廠管線破裂污染北勢溪",
+  {m:"統一企業", ms:"統一企業", w:{n:4, amt:497000}, a:{n:0, amt:0},
+   d:{all:"最大單筆 21.6 萬元——楊梅廠放流水懸浮固體超標；另有湖口廠管線破裂污染北勢溪",
+      w:"最大單筆 21.6 萬元——楊梅廠放流水懸浮固體超標；另有湖口廠管線破裂污染北勢溪"},
    goods:"統一肉燥麵、科學麵、麥香、茶裏王、瑞穗鮮乳、統一布丁"},
-  {m:"乖乖公司", n:1, total:"1 萬元", amt:10000,
-   max:"最大單筆 1 萬元——未依許可文件登記事項運作",
+  {m:"乖乖公司", ms:"乖乖公司", w:{n:1, amt:10000}, a:{n:0, amt:0},
+   d:{all:"最大單筆 1 萬元——未依許可文件登記事項運作",
+      w:"最大單筆 1 萬元——未依許可文件登記事項運作"},
    goods:"乖乖、孔雀餅乾、孔雀捲心餅"},
-  {m:"味全食品", n:1, total:"1 萬元", amt:10000,
-   max:"最大單筆 1 萬元——設備保養停電，監測數據不足。另：所屬頂新集團 2014 年劣質油品事件屬食安紀錄，不在本統計",
+  {m:"味全食品", ms:"味全食品", w:{n:1, amt:10000}, a:{n:0, amt:0},
+   d:{all:"最大單筆 1 萬元——設備保養停電，監測數據不足。另：所屬頂新集團 2014 年劣質油品事件屬食安紀錄，不在本統計",
+      w:"最大單筆 1 萬元——設備保養停電，監測數據不足。另：所屬頂新集團 2014 年劣質油品事件屬食安紀錄，不在本統計"},
    goods:"林鳳營、貝納頌咖啡、木崗雞蛋"}
 ];
 const ZEROS = "愛之味、味丹企業（味味A、多喝水）、聯華食品工業（卡迪那、可樂果）、光泉牧場、名牌食品（悅氏）、金門酒廠";
+const RANK_SUBS = {
+  all:"遊戲內十五家製造商，2024 年以來水污染與固定空污裁罰金額由高到低",
+  w:"遊戲內十五家製造商，2024 年以來水污染裁罰金額由高到低",
+  a:"遊戲內十五家製造商，2024 年以來固定空污裁罰金額由高到低"
+};
+const ZERO_LABELS = {all:"同期間這兩類裁罰為零", w:"同期間水污染裁罰為零", a:"同期間固定空污裁罰為零"};
+
+function fmtWan(amt){
+  return (amt/1e4).toLocaleString("zh-TW",{maximumFractionDigits:2}) + " 萬元";
+}
+
+function renderRanks(view){
+  const rows = RANKS.map(r=>{
+    const n = view==="w" ? r.w.n : view==="a" ? r.a.n : r.w.n + r.a.n;
+    const amt = view==="w" ? r.w.amt : view==="a" ? r.a.amt : r.w.amt + r.a.amt;
+    return {r, n, amt};
+  });
+  const inView = rows.filter(x=>x.n>0).sort((x,y)=>y.amt-x.amt);
+  const zeroExtra = rows.filter(x=>x.n===0).map(x=>`${x.r.ms}（${x.r.goods.split("、")[0]}）`);
+  const totN = inView.reduce((s,x)=>s+x.n,0);
+  const totAmt = inView.reduce((s,x)=>s+x.amt,0);
+  document.getElementById("rank-sub").textContent = RANK_SUBS[view];
+  document.getElementById("rank-total").innerHTML =
+    `<span>十五家製造商合計</span><b>${totN} 筆／${fmtWan(totAmt)}</b>`;
+  const lg = document.getElementById("rank-legend");
+  lg.style.display = view==="all" ? "" : "none";
+  lg.innerHTML = view==="all"
+    ? `<span><i style="background:var(--water)"></i>水污染</span><span><i style="background:var(--air)"></i>固定空污</span>` : "";
+  const maxAmt = Math.max(...inView.map(x=>x.amt));
+  document.getElementById("bars").innerHTML = inView.map((x,i)=>{
+    const w = x.amt / maxAmt * 62;
+    let segs;
+    if(view==="all"){
+      const parts = [];
+      if(x.r.w.amt) parts.push({cls:"water", pw:w * x.r.w.amt / x.amt});
+      if(x.r.a.amt) parts.push({cls:"air", pw:w * x.r.a.amt / x.amt});
+      segs = parts.map((p,pi)=>{
+        const shape = parts.length===1 ? "only" : (pi===0 ? "first" : "last");
+        return `<div class="seg ${p.cls} ${shape}" style="width:${p.pw}%"></div>`;
+      }).join("");
+    } else {
+      segs = `<div class="seg ${view==="w"?"water":"air"} only" style="width:${w}%"></div>`;
+    }
+    return `<div class="rank-row">
+      <div class="rank-head"><b>${i+1}. ${x.r.m}</b><span>${x.n} 筆</span></div>
+      <div class="rank-bar">${segs}<span class="bar-val">${fmtWan(x.amt)}</span></div>
+      <div class="rank-detail">${x.r.d[view]}<br><b>關聯商品</b>：${x.r.goods}</div>
+    </div>`;
+  }).join("");
+  document.getElementById("zero-block").innerHTML =
+    `<b>${ZERO_LABELS[view]}</b>：${zeroExtra.concat(ZEROS).join("、")}`;
+}
+
+function setRankView(view){
+  document.querySelectorAll("#rank-toggle button").forEach(b=>
+    b.setAttribute("aria-pressed", String(b.dataset.view===view)));
+  renderRanks(view);
+}
 
 const VERDICTS = {
   a:{t:"這籃很澎湃，紀錄也很澎湃",
@@ -555,24 +655,31 @@ const VERDICTS = {
 
 function finish(id){
   const v = VERDICTS[id];
+  const b = DATA.find(x=>x.id===id);
   document.getElementById("verdict").innerHTML = `
-    <span class="eyebrow">你供上了「${DATA.find(x=>x.id===id).name}」</span>
+    <span class="eyebrow">你供上了「${b.name}」</span>
     <h2>${v.t}</h2><p>${v.d}</p>`;
-  const bars = document.getElementById("bars");
-  const maxAmt = Math.max(...RANKS.map(r=>r.amt));
-  bars.innerHTML = RANKS.map((r,i)=>{
-    const w = r.amt / maxAmt * 62;
-    return `<div class="rank-row">
-      <div class="rank-head"><b>${i+1}. ${r.m}</b><span>${r.n} 筆</span></div>
-      <div class="rank-bar"><div class="seg only" style="width:${w}%"></div><span class="bar-val">${r.total}</span></div>
-      <div class="rank-detail">${r.max}<br><b>關聯商品</b>：${r.goods}</div>
-    </div>`;
-  }).join("");
-  document.getElementById("zero-block").innerHTML =
-    `<b>同期間這兩類裁罰為零</b>：${ZEROS}`;
+  const sum = b.count
+    ? `<div class="basket-sum"><b>${b.count} 筆／${b.money}</b><span>籃內製造商 2024 年以來水污染與固定空污裁罰合計</span></div>`
+    : `<div class="basket-sum"><b>0 筆</b><span>籃內五家製造商 2024 年以來皆無水污染與固定空污裁罰</span></div>`;
+  const recap = document.getElementById("recap");
+  recap.innerHTML = `
+    <div class="panel-head">
+      <span class="eyebrow">這一籃供了什麼</span>
+      <h2>${b.name}</h2>
+      <p>商品、製造商與 2024 年以來的裁罰紀錄</p>
+    </div>
+    ${b.items.map((it,idx)=>itemHTML(b, it, idx, "e")).join("")}
+    ${sum}`;
+  bindChips(recap);
+  document.getElementById("panel").innerHTML = "";
+  setRankView("all");
   show("s-end");
   window.scrollTo({top:0});
 }
+
+document.querySelectorAll("#rank-toggle button").forEach(btn=>
+  btn.addEventListener("click", ()=>setRankView(btn.dataset.view)));
 
 function show(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
