@@ -524,7 +524,7 @@ const DATA = [
 const viewed = new Set();
 const lifted = new Set();
 let current = null;
-let decided = false;
+let ended = false;
 
 function basketSVG(b){
   const peekItems = b.items.filter(it=>it.img).slice(0,3);
@@ -592,13 +592,13 @@ function renderAltar(){
   DATA.forEach(b=>{
     const el = document.createElement("button");
     el.className = "basket" + (lifted.has(b.id) ? " opened" : "");
-    el.setAttribute("aria-label", b.name + (lifted.has(b.id) ? "（已掀布，點一下開籃看明細）" : "（蓋著紅布，點一下掀開）"));
-    el.innerHTML = basketSVG(b) + `<span class="basket-tag"><b>${b.tag}</b><i>再點一次，開籃看明細</i></span>`;
+    el.setAttribute("aria-label", b.name + (lifted.has(b.id) ? "（已掀布，點一下看籃內供品）" : "（蓋著紅布，點一下掀開）"));
+    el.innerHTML = basketSVG(b) + `<span class="basket-tag"><b>${b.tag}</b><i>再點一次，看籃內供品</i></span>`;
     el.addEventListener("click", ()=>{
       if(!lifted.has(b.id)){
         lifted.add(b.id);
         el.classList.add("opened");
-        el.setAttribute("aria-label", b.name + "（已掀布，點一下開籃看明細）");
+        el.setAttribute("aria-label", b.name + "（已掀布，點一下看籃內供品）");
       } else {
         openBasket(b.id);
       }
@@ -607,17 +607,10 @@ function renderAltar(){
   });
   const cta = document.getElementById("altar-cta");
   const hint = document.getElementById("altar-hint");
-  if(viewed.size === 0){
-    cta.innerHTML = "";
-    hint.textContent = "";
-  } else {
-    cta.innerHTML = `<button class="btn primary" id="btn-decide">我 決 定 好 了</button>`;
-    hint.textContent = viewed.size < 3 ? `已看過 ${viewed.size}／3 籃` : "三籃都看過了，選一籃供上吧。";
-    document.getElementById("btn-decide").addEventListener("click", ()=>{
-      show("s-basket");
-      renderChoose();
-    });
-  }
+  cta.innerHTML = "";
+  hint.textContent = viewed.size === 0 ? ""
+    : viewed.size < 3 ? `已看過 ${viewed.size}／3 籃`
+    : "三籃都看過了，點開想供的那籃，按「就供這籃」。";
 }
 
 function chipRow(w, a){
@@ -668,8 +661,8 @@ function openBasket(id){
   lifted.add(id);
   const b = DATA.find(x=>x.id===id);
   const p = document.getElementById("panel");
-  const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p", decided)).join("");
-  const sum = !decided ? "" : b.count
+  const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p", ended)).join("");
+  const sum = !ended ? "" : b.count
     ? `<div class="basket-sum"><b>${b.count} 筆／${b.money}</b><span>籃內製造商 2024 年以來水污染與固定空污裁罰合計</span></div>`
     : `<div class="basket-sum"><b>0 筆</b><span>籃內五家製造商 2024 年以來皆無水污染與固定空污裁罰</span></div>`;
   p.innerHTML = `
@@ -679,9 +672,10 @@ function openBasket(id){
       <p>${b.tag}</p>
     </div>
     ${items}${sum}
-    <div class="panel-actions">
-      <button class="btn quiet" id="btn-back">再看看別籃</button>
-      <button class="btn primary" id="btn-offer">就供這籃</button>
+    <div class="panel-actions">${ended
+      ? `<button class="btn quiet" id="btn-return">回到結局</button>`
+      : `<button class="btn quiet" id="btn-back">再看看別籃</button>
+         <button class="btn primary" id="btn-offer">就供這籃</button>`}
     </div>
     <div class="confirm" id="confirm">
       <p id="confirm-msg"></p>
@@ -691,43 +685,24 @@ function openBasket(id){
       </div>
     </div>`;
   bindChips(p);
-  document.getElementById("btn-back").addEventListener("click", ()=>{
-    if(decided){ renderChoose(); } else { show("s-altar"); renderAltar(); }
-  });
-  document.getElementById("btn-offer").addEventListener("click", ()=>{
-    if(viewed.size < 3){
-      document.getElementById("confirm-msg").textContent = `還有 ${3 - viewed.size} 籃沒看過。不先看看嗎？`;
-      document.getElementById("confirm").classList.add("on");
-      document.getElementById("btn-goback").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
-      document.getElementById("btn-sure").addEventListener("click", ()=>finish(b.id));
-    } else {
-      finish(b.id);
-    }
-  });
-  show("s-basket");
-  window.scrollTo({top:0});
-}
-
-function renderChoose(){
-  decided = true;
-  const p = document.getElementById("panel");
-  const rows = DATA.map(b=>`
-    <div class="item">
-      <div class="item-top"><span class="item-name">${b.name}</span>
-      <span class="item-maker">${b.count ? b.count + " 筆／" + b.money : "這兩類裁罰 0 筆"}</span></div>
-      <div class="panel-actions" style="margin-top:8px;justify-content:flex-start">
-        <button class="btn quiet" data-view="${b.id}">我要看違規</button>
-        <button class="btn primary" data-pick="${b.id}">供這籃</button>
-      </div>
-    </div>`).join("");
-  p.innerHTML = `
-    <div class="panel-head">
-      <span class="eyebrow">最後一步</span>
-      <h2>選一籃，供上</h2>
-      <p>好兄弟在看，河川與空氣也在看。</p>
-    </div>${rows}`;
-  p.querySelectorAll("[data-view]").forEach(el=>el.addEventListener("click", ()=>openBasket(el.dataset.view)));
-  p.querySelectorAll("[data-pick]").forEach(el=>el.addEventListener("click", ()=>finish(el.dataset.pick)));
+  if(ended){
+    document.getElementById("btn-return").addEventListener("click", ()=>{
+      show("s-end");
+      window.scrollTo({top:0});
+    });
+  } else {
+    document.getElementById("btn-back").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+    document.getElementById("btn-offer").addEventListener("click", ()=>{
+      if(viewed.size < 3){
+        document.getElementById("confirm-msg").textContent = `還有 ${3 - viewed.size} 籃沒看過。不先看看嗎？`;
+        document.getElementById("confirm").classList.add("on");
+        document.getElementById("btn-goback").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+        document.getElementById("btn-sure").addEventListener("click", ()=>finish(b.id));
+      } else {
+        finish(b.id);
+      }
+    });
+  }
   show("s-basket");
   window.scrollTo({top:0});
 }
@@ -850,6 +825,7 @@ const VERDICTS = {
 };
 
 function finish(id){
+  ended = true;
   const v = VERDICTS[id];
   const b = DATA.find(x=>x.id===id);
   document.getElementById("verdict").innerHTML = `
@@ -862,7 +838,11 @@ function finish(id){
       <h2>${b.name}</h2>
     </div>
     <div class="recap-list">${b.items.map(it=>
-      `<div class="recap-row"><span class="recap-p">${it.p}</span><span class="recap-m">${it.m}</span></div>`).join("")}</div>`;
+      `<div class="recap-row"><span class="recap-p">${it.p}</span><span class="recap-m">${it.m}</span></div>`).join("")}</div>
+    <div class="panel-actions" style="margin-top:14px">
+      <button class="btn quiet" id="btn-viewreveal">我要看違規</button>
+    </div>`;
+  document.getElementById("btn-viewreveal").addEventListener("click", ()=>openBasket(id));
   document.getElementById("panel").innerHTML = "";
   chosenMakers = new Set(b.items.map(it=>it.m));
   document.querySelectorAll(".clean-tbl tr[data-m]").forEach(tr=>
@@ -882,7 +862,7 @@ function show(id){
 
 document.getElementById("btn-start").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
 document.getElementById("btn-replay").addEventListener("click", ()=>{
-  viewed.clear(); lifted.clear(); current = null; decided = false;
+  viewed.clear(); lifted.clear(); current = null; ended = false;
   show("s-altar"); renderAltar();
   window.scrollTo({top:0});
 });
