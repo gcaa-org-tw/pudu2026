@@ -78,22 +78,39 @@ a{color:var(--gold)}
 .altar-head{text-align:center;margin-bottom:6px}
 .altar-head h2{font-weight:900;font-size:24px;letter-spacing:.2em}
 .altar-head p{color:var(--muted);font-size:15px;margin-top:6px}
-.incense{display:flex;justify-content:center;height:74px;position:relative;margin-top:4px}
-.smoke{position:absolute;bottom:14px;width:2px;height:52px;border-radius:2px;
-  background:linear-gradient(to top, rgba(243,233,216,.4), transparent);
+.altar-scene{position:relative;margin-top:30px}
+.censer-wrap{position:absolute;left:50%;transform:translateX(-50%);bottom:2px;width:150px;height:230px;
+  display:flex;align-items:flex-end;justify-content:center;pointer-events:none;z-index:0}
+.censer{width:132px;height:auto;display:block}
+.smoke{position:absolute;left:50%;bottom:96px;width:2px;height:96px;border-radius:2px;
+  background:linear-gradient(to top, rgba(243,233,216,.42), transparent);
   animation:sway 6s ease-in-out infinite;transform-origin:bottom center}
-.smoke:nth-child(2){animation-delay:-3s;height:42px;opacity:.7;margin-left:26px}
-.pot{position:absolute;bottom:0;width:64px;height:18px;border-radius:0 0 14px 14px;background:#6E4A28;border-top:3px solid var(--gold)}
-.pot::before,.pot::after{content:"";position:absolute;top:-12px;width:3px;height:13px;background:#B0512F;left:24px}
-.pot::after{left:37px}
+.smoke:nth-child(2){animation-delay:-3s;height:78px;opacity:.7;margin-left:-14px}
+.smoke:nth-child(3){animation-delay:-1.5s;height:84px;opacity:.55;margin-left:13px}
 @keyframes sway{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(5deg) translateY(-4px)}}
+.candle{position:absolute;bottom:106px;width:46px;height:auto;z-index:0;pointer-events:none}
+.candle-l{left:1%}
+.candle-r{right:1%}
+.candle .flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick 1.7s ease-in-out infinite alternate}
+.candle-r .flame{animation-delay:-.9s}
+.candle .glow{animation:glowpulse 1.7s ease-in-out infinite alternate}
+@keyframes flick{0%{transform:scaleY(1) scaleX(1)}45%{transform:scaleY(1.14) scaleX(.9) rotate(-2deg)}100%{transform:scaleY(.94) scaleX(1.05) rotate(2deg)}}
+@keyframes glowpulse{from{opacity:.55}to{opacity:.95}}
 
 .baskets{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:8px 0 2px}
 .basket{
   background:transparent;border:none;color:inherit;text-align:center;padding:6px 2px 10px;border-radius:8px;
-  transition:transform .3s;
+  transition:transform .3s;position:relative;
 }
 .basket:hover{transform:translateY(-4px)}
+.basket .basket-tag{
+  position:absolute;left:0;right:0;top:calc(100% - 6px);opacity:0;transition:opacity .4s ease .35s;
+  pointer-events:none;font-size:12.5px;line-height:1.55;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;gap:2px}
+.basket .basket-tag b{font-weight:600;background:rgba(28,18,12,.78);padding:0 10px;border-radius:3px;white-space:nowrap}
+.basket .basket-tag i{font-style:normal;color:var(--gold);font-size:11.5px;letter-spacing:.06em;
+  background:rgba(28,18,12,.78);padding:0 8px;border-radius:3px;white-space:nowrap}
+.basket.opened .basket-tag{opacity:1}
 .basket svg{width:100%;height:auto;display:block}
 .basket .cloth-g{transition:transform .5s ease, opacity .5s ease;transform-origin:80% 20%}
 .basket.opened .cloth-g{transform:translate(14%,-30%) rotate(14deg);opacity:0}
@@ -102,9 +119,22 @@ a{color:var(--gold)}
 .baskets{position:relative;z-index:1}
 .basket .folded{opacity:0;transition:opacity .4s ease .25s}
 .basket.opened .folded{opacity:1}
-.altar-table{height:34px;border-radius:3px;background:linear-gradient(#7A4E2D,#5C3A20);border-top:2px solid #96633A;margin-top:-26px;position:relative;z-index:0}
-.altar-legs{display:flex;justify-content:space-between;padding:0 9%}
-.altar-legs i{width:14px;height:34px;background:#4E311B;border-radius:0 0 3px 3px}
+.altar-table{height:30px;border-radius:3px 3px 0 0;margin-top:-26px;position:relative;z-index:0;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 3px, transparent 3px 28px),
+    linear-gradient(180deg,#8A5A33 0%,#6E4526 45%,#573820 100%);
+  border-top:2px solid #A9743F;
+  box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.altar-skirt{height:88px;position:relative;border-radius:0 0 4px 4px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 3px, rgba(255,255,255,.03) 3px 6px, transparent 6px 62px),
+    linear-gradient(180deg,#8E1F23 0%,#77171B 55%,#5A1013 100%);
+  border-top:3px solid #B98F52;
+  box-shadow:inset 0 14px 20px -12px rgba(0,0,0,.55)}
+.altar-skirt::before{content:"";position:absolute;left:10px;right:10px;top:7px;height:0;
+  border-top:1.5px solid rgba(216,169,61,.7)}
+.altar-skirt::after{content:"";position:absolute;left:0;right:0;bottom:0;height:9px;
+  background:repeating-linear-gradient(90deg, rgba(216,169,61,.45) 0 2px, transparent 2px 8px)}
 .altar-foot{text-align:center;margin-top:22px;min-height:3em}
 .altar-foot .hint{color:var(--muted);font-size:14px;margin-top:10px}
 
@@ -237,9 +267,16 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 
 @media (max-width:560px){
   .baskets{gap:8px}
+  .candle{width:32px;bottom:108px}
+  .censer{width:104px}
+  .smoke{bottom:86px;height:72px}
+  .smoke:nth-child(2){height:58px;margin-left:-11px}
+  .smoke:nth-child(3){height:64px;margin-left:10px}
+  .basket .basket-tag{font-size:10.5px}
+  .basket .basket-tag i{font-size:10px;letter-spacing:0}
 }
 @media (prefers-reduced-motion:reduce){
-  .smoke{animation:none}
+  .smoke,.candle .flame,.candle .glow{animation:none}
   .basket,.basket .cloth-g,.basket .peek,.btn{transition:none}
 }
 </style>
@@ -258,12 +295,88 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 <section class="screen" id="s-altar" aria-label="供桌">
   <div class="altar-head">
     <h2>供　桌</h2>
-    <p>點籃子，掀紅布。三籃都看過再決定，比較不失禮。</p>
+    <p>點籃子掀紅布，再點一次開籃。三籃都看過再決定，比較不失禮。</p>
   </div>
-  <div class="incense" aria-hidden="true"><span class="smoke"></span><span class="smoke"></span><span class="pot"></span></div>
-  <div class="baskets" id="baskets"></div>
-  <div class="altar-table" aria-hidden="true"></div>
-  <div class="altar-legs" aria-hidden="true"><i></i><i></i></div>
+  <div class="altar-scene">
+    <div class="baskets" id="baskets"></div>
+    <div class="altar-table" aria-hidden="true"></div>
+    <div class="altar-skirt" aria-hidden="true"></div>
+    <svg class="candle candle-l" viewBox="0 0 44 100" aria-hidden="true">
+      <ellipse class="glow" cx="22" cy="16" rx="15" ry="18" fill="url(#g-glow)"/>
+      <g class="flame">
+        <path d="M22 4 Q29 15 22 24 Q15 15 22 4 Z" fill="#F2B441"/>
+        <path d="M22 10 Q25.5 16 22 21.5 Q18.5 16 22 10 Z" fill="#FBE397"/>
+      </g>
+      <rect x="21.2" y="23" width="1.6" height="5" fill="#5B4324"/>
+      <path d="M15.5 28 h13 l2 54 a8.5 3 0 0 1 -17 0 Z" fill="url(#g-candle)"/>
+      <ellipse cx="22" cy="28" rx="6.5" ry="2.2" fill="#E4574F"/>
+      <g stroke="#D8A93D" stroke-width="1.5" opacity=".8">
+        <path d="M15.9 42 h12.2"/><path d="M15.6 48 h12.8"/>
+      </g>
+      <ellipse cx="22" cy="86" rx="13" ry="4.5" fill="url(#g-bronze)"/>
+      <rect x="18" y="87" width="8" height="7" fill="#6E5127"/>
+      <ellipse cx="22" cy="95" rx="16" ry="4.5" fill="#57401E"/>
+    </svg>
+    <svg class="candle candle-r" viewBox="0 0 44 100" aria-hidden="true">
+      <ellipse class="glow" cx="22" cy="16" rx="15" ry="18" fill="url(#g-glow)"/>
+      <g class="flame">
+        <path d="M22 4 Q29 15 22 24 Q15 15 22 4 Z" fill="#F2B441"/>
+        <path d="M22 10 Q25.5 16 22 21.5 Q18.5 16 22 10 Z" fill="#FBE397"/>
+      </g>
+      <rect x="21.2" y="23" width="1.6" height="5" fill="#5B4324"/>
+      <path d="M15.5 28 h13 l2 54 a8.5 3 0 0 1 -17 0 Z" fill="url(#g-candle)"/>
+      <ellipse cx="22" cy="28" rx="6.5" ry="2.2" fill="#E4574F"/>
+      <g stroke="#D8A93D" stroke-width="1.5" opacity=".8">
+        <path d="M15.9 42 h12.2"/><path d="M15.6 48 h12.8"/>
+      </g>
+      <ellipse cx="22" cy="86" rx="13" ry="4.5" fill="url(#g-bronze)"/>
+      <rect x="18" y="87" width="8" height="7" fill="#6E5127"/>
+      <ellipse cx="22" cy="95" rx="16" ry="4.5" fill="#57401E"/>
+    </svg>
+    <div class="censer-wrap" aria-hidden="true">
+      <span class="smoke"></span><span class="smoke"></span><span class="smoke"></span>
+      <svg class="censer" viewBox="0 0 150 118">
+        <g stroke="#8A5A33" stroke-width="2.4" stroke-linecap="round">
+          <path d="M69 18 L72 56"/><path d="M75 12 L75 56"/><path d="M81 18 L78 56"/>
+        </g>
+        <circle cx="69" cy="17" r="1.8" fill="#E86A3C"/>
+        <circle cx="75" cy="11" r="1.8" fill="#F2B441"/>
+        <circle cx="81" cy="17" r="1.8" fill="#E86A3C"/>
+        <path d="M32 62 Q26 46 38 42 Q46 39 48 50" fill="none" stroke="url(#g-bronze)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M118 62 Q124 46 112 42 Q104 39 102 50" fill="none" stroke="url(#g-bronze)" stroke-width="7" stroke-linecap="round"/>
+        <ellipse cx="75" cy="62" rx="42" ry="9" fill="#5F4720"/>
+        <ellipse cx="75" cy="60" rx="42" ry="9" fill="url(#g-bronze)"/>
+        <ellipse cx="75" cy="60" rx="33" ry="6" fill="#3E2E12"/>
+        <path d="M35 64 Q34 92 55 100 Q75 106 95 100 Q116 92 115 64 Q95 74 75 74 Q55 74 35 64 Z" fill="url(#g-censer)"/>
+        <path d="M42 88 Q75 100 108 88" fill="none" stroke="#D8A93D" stroke-width="1.6" opacity=".55"/>
+        <path d="M40 78 Q75 90 110 78" fill="none" stroke="#D8A93D" stroke-width="1.6" opacity=".4"/>
+        <path d="M52 100 l-5 12 M75 104 l0 11 M98 100 l5 12" stroke="#5F4720" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <linearGradient id="g-bamboo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#CDA668"/><stop offset="1" stop-color="#A07A42"/>
+    </linearGradient>
+    <linearGradient id="g-cloth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C74440"/><stop offset="1" stop-color="#A02226"/>
+    </linearGradient>
+    <linearGradient id="g-plaque" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8E2226"/><stop offset="1" stop-color="#6E1518"/>
+    </linearGradient>
+    <linearGradient id="g-candle" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D9534A"/><stop offset=".5" stop-color="#B3282D"/><stop offset="1" stop-color="#7E1B1F"/>
+    </linearGradient>
+    <linearGradient id="g-bronze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C9A954"/><stop offset="1" stop-color="#7A5C28"/>
+    </linearGradient>
+    <linearGradient id="g-censer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7B38"/><stop offset=".55" stop-color="#7A5C28"/><stop offset="1" stop-color="#54401A"/>
+    </linearGradient>
+    <radialGradient id="g-glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="rgba(242,180,65,.45)"/><stop offset="1" stop-color="rgba(242,180,65,0)"/>
+    </radialGradient>
+  </defs></svg>
   <div class="altar-foot">
     <div id="altar-cta"></div>
     <p class="hint" id="altar-hint"></p>
@@ -409,41 +522,64 @@ const DATA = [
 ];
 
 const viewed = new Set();
+const lifted = new Set();
 let current = null;
 
-function basketSVG(name){
+function basketSVG(b){
+  const peekItems = b.items.filter(it=>it.img).slice(0,3);
+  const CX=[63,100,137], ROT=[-9,2,8], Y=[46,40,47], W=34, H=44;
+  const cards = peekItems.map((it,i)=>{
+    const x=CX[i]-W/2, y=Y[i], id=`pk-${b.id}-${i}`;
+    return `<g transform="rotate(${ROT[i]} ${CX[i]} ${y+H/2})">
+      <rect x="${x}" y="${y}" width="${W}" height="${H}" rx="4" fill="#F5EEDC" stroke="#C9B183" stroke-width="1"/>
+      <clipPath id="${id}"><rect x="${x+2}" y="${y+2}" width="${W-4}" height="${H-4}" rx="3"/></clipPath>
+      <image href="${IMG}${it.img}" x="${x+2}" y="${y+2}" width="${W-4}" height="${H-4}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>
+    </g>`;
+  }).join("");
   return `
   <svg viewBox="0 0 200 170" role="img" aria-hidden="true">
-    <g class="peek">
-      <rect x="52" y="52" width="26" height="34" rx="3" fill="#A63A2B"/>
-      <rect x="84" y="44" width="30" height="42" rx="3" fill="#3E6B49"/>
-      <rect x="120" y="54" width="26" height="32" rx="3" fill="#C99A3F"/>
-      <circle cx="66" cy="50" r="6" fill="#7E2A20"/>
-      <circle cx="134" cy="52" r="6" fill="#9C7A2F"/>
-    </g>
-    <path d="M30 88 Q100 70 170 88 L160 140 Q100 156 40 140 Z" fill="#B98F52"/>
-    <path d="M30 88 Q100 70 170 88 L168 96 Q100 78 32 96 Z" fill="#8F6D3A"/>
-    <g stroke="#8F6D3A" stroke-width="2" opacity=".55">
+    <ellipse cx="100" cy="152" rx="64" ry="6" fill="rgba(0,0,0,.38)"/>
+    <g class="peek">${cards}</g>
+    <path d="M30 88 Q100 70 170 88 L160 140 Q100 156 40 140 Z" fill="url(#g-bamboo)"/>
+    <g stroke="#8F6D3A" stroke-width="5" opacity=".28">
       <path d="M44 100 L52 138"/><path d="M68 96 L73 143"/><path d="M96 94 L98 147"/>
       <path d="M124 96 L121 144"/><path d="M150 100 L143 139"/>
-      <path d="M36 112 Q100 126 164 112" fill="none"/>
-      <path d="M39 126 Q100 140 161 126" fill="none"/>
     </g>
+    <g stroke="#E5C58A" stroke-width="1.6" opacity=".35">
+      <path d="M47 100 L55 137"/><path d="M71 96 L76 142"/><path d="M99 94 L101 146"/>
+      <path d="M127 96 L124 143"/><path d="M153 100 L146 138"/>
+    </g>
+    <g stroke="#6E5127" stroke-width="4.5" opacity=".4" fill="none">
+      <path d="M33 99 Q100 84 167 99"/>
+      <path d="M36 112 Q100 126 164 112"/>
+      <path d="M39 126 Q100 140 161 126"/>
+    </g>
+    <path d="M34 105 Q100 92 166 105" fill="none" stroke="#E8CD96" stroke-width="1.5" opacity=".45"/>
+    <path d="M30 88 Q100 70 170 88" fill="none" stroke="#7B5B2E" stroke-width="7" stroke-linecap="round"/>
+    <path d="M30 88 Q100 70 170 88" fill="none" stroke="#D9B36E" stroke-width="2" stroke-dasharray="7 5" opacity=".6"/>
     <g class="cloth-g">
-      <path d="M28 86 Q40 40 100 34 Q160 40 172 86 Q150 74 100 72 Q50 74 28 86 Z" fill="#B3282D"/>
+      <path d="M28 86 Q40 40 100 34 Q160 40 172 86 Q150 74 100 72 Q50 74 28 86 Z" fill="url(#g-cloth)"/>
       <path d="M28 86 Q40 40 100 34 Q160 40 172 86 L166 92 Q100 76 34 92 Z" fill="#8E1F23"/>
-      <path d="M60 46 Q64 62 58 78 M100 36 Q100 54 100 72 M140 46 Q136 62 142 78" stroke="#D0433F" stroke-width="2.5" fill="none" opacity=".8"/>
+      <path d="M100 34 Q90 54 76 73 Q94 70 100 72 Z" fill="rgba(0,0,0,.13)"/>
+      <path d="M100 34 Q114 56 130 75 Q112 71 100 72 Z" fill="rgba(0,0,0,.09)"/>
+      <path d="M60 46 Q64 62 58 78 M100 36 Q100 54 100 72 M140 46 Q136 62 142 78" stroke="#E06A62" stroke-width="2" fill="none" opacity=".55"/>
+      <path d="M52 50 Q44 62 38 76" stroke="rgba(255,255,255,.28)" stroke-width="1.8" fill="none"/>
+      <path d="M34 92 Q100 76 166 92" fill="none" stroke="#D8A93D" stroke-width="1.8" opacity=".85"/>
       <path d="M166 88 L188 118 L176 124 L158 96 Z" fill="#B3282D"/>
-      <circle cx="182" cy="121" r="3" fill="#D8A93D"/>
+      <path d="M170 92 L182 108" stroke="#8E1F23" stroke-width="1.6" opacity=".7"/>
+      <circle cx="183" cy="119" r="3" fill="#D8A93D"/>
+      <path d="M179 121 l-2 8 M183 122 l0 8 M187 121 l2 8" stroke="#D8A93D" stroke-width="1.5"/>
     </g>
     <g class="folded">
       <path d="M128 148 Q142 136 158 143 Q174 133 190 141 Q198 150 184 154 Q168 159 148 156 Q132 156 128 148 Z" fill="#B3282D"/>
       <path d="M140 149 Q156 142 172 146 M150 153 Q166 149 180 149" stroke="#8E1F23" stroke-width="2" fill="none"/>
+      <path d="M132 150 Q150 158 178 155" stroke="#D8A93D" stroke-width="1.2" fill="none" opacity=".7"/>
       <circle cx="188" cy="145" r="2.5" fill="#D8A93D"/>
     </g>
     <g>
-      <rect x="45" y="103" width="110" height="32" rx="4" fill="#7E1B1F" stroke="#D8A93D" stroke-width="1.5"/>
-      <text x="100" y="127" text-anchor="middle" font-size="20" font-weight="700" fill="#F3E9D8" font-family="inherit">${name}</text>
+      <rect x="45" y="103" width="110" height="32" rx="4" fill="url(#g-plaque)" stroke="#D8A93D" stroke-width="1.5"/>
+      <rect x="48.5" y="106.5" width="103" height="25" rx="2.5" fill="none" stroke="rgba(216,169,61,.35)" stroke-width="1"/>
+      <text x="100" y="127" text-anchor="middle" font-size="20" font-weight="700" fill="#F3E9D8" font-family="inherit">${b.name}</text>
     </g>
   </svg>`;
 }
@@ -453,13 +589,14 @@ function renderAltar(){
   wrap.innerHTML = "";
   DATA.forEach(b=>{
     const el = document.createElement("button");
-    el.className = "basket" + (viewed.has(b.id) ? " opened" : "");
-    el.setAttribute("aria-label", b.name + (viewed.has(b.id) ? "（已掀開）" : "（未掀開）"));
-    el.innerHTML = basketSVG(b.name);
+    el.className = "basket" + (lifted.has(b.id) ? " opened" : "");
+    el.setAttribute("aria-label", b.name + (lifted.has(b.id) ? "（已掀布，點一下開籃看明細）" : "（蓋著紅布，點一下掀開）"));
+    el.innerHTML = basketSVG(b) + `<span class="basket-tag"><b>${b.tag}</b><i>再點一次，開籃看明細</i></span>`;
     el.addEventListener("click", ()=>{
-      if(!viewed.has(b.id)){
+      if(!lifted.has(b.id)){
+        lifted.add(b.id);
         el.classList.add("opened");
-        setTimeout(()=>openBasket(b.id), 480);
+        el.setAttribute("aria-label", b.name + "（已掀布，點一下開籃看明細）");
       } else {
         openBasket(b.id);
       }
@@ -497,7 +634,7 @@ function itemHTML(b, it, idx, prefix){
   const im = it.img ? `<img class="item-img" src="${IMG}${it.img}" alt="${it.p}" loading="lazy">` : "";
   const key = `${prefix}-${b.id}-${idx}`;
   const chips = it.recs
-    ? `<button class="chips-btn" aria-expanded="false" data-recs="${key}">${chipRow(it.water, it.air)}<span class="hint">點開逐筆紀錄</span></button>
+    ? `<button class="chips-btn" aria-expanded="false" data-recs="${key}">${chipRow(it.water, it.air)}<span class="hint">點開合併紀錄</span></button>
        <div class="recs" id="recs-${key}" hidden>${it.recs.map(r=>
          `<div class="rec"><span class="rec-d">${r[0]}</span><span class="rec-m">${r[1]}</span><span class="rec-f">${r[2]}</span></div>`).join("")}</div>`
     : `<div class="chips">${chipRow(it.water, it.air)}</div>`;
@@ -523,6 +660,7 @@ function bindChips(root){
 function openBasket(id){
   current = id;
   viewed.add(id);
+  lifted.add(id);
   const b = DATA.find(x=>x.id===id);
   const p = document.getElementById("panel");
   const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p")).join("");
@@ -736,7 +874,7 @@ function show(id){
 
 document.getElementById("btn-start").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
 document.getElementById("btn-replay").addEventListener("click", ()=>{
-  viewed.clear(); current = null;
+  viewed.clear(); lifted.clear(); current = null;
   show("s-altar"); renderAltar();
   window.scrollTo({top:0});
 });
