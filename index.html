@@ -180,13 +180,7 @@ a{color:var(--gold)}
 .basket-sum b{font-size:20px;font-weight:900}
 .basket-sum span{color:var(--muted);font-size:14px}
 .panel-actions{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
-.confirm{
-  border:1px solid var(--line);background:var(--panel);border-radius:6px;
-  padding:14px 16px;margin-top:16px;text-align:center;display:none
-}
-.confirm.on{display:block}
-.confirm p{font-size:15px;margin-bottom:10px}
-.confirm .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.confirm-msg{text-align:center;font-size:15px;margin-top:18px}
 
 .verdict{text-align:center;margin-bottom:22px}
 .verdict .eyebrow{display:block;margin-bottom:8px}
@@ -666,24 +660,20 @@ function openBasket(id){
       <p>${b.tag}</p>
     </div>
     ${items}
+    <p class="confirm-msg" id="confirm-msg" hidden></p>
     <div class="panel-actions">
-      <button class="btn quiet" id="btn-back">再看看別籃</button>
+      <button class="btn quiet" id="btn-back">回供桌看看</button>
       <button class="btn primary" id="btn-offer">就供這籃</button>
-    </div>
-    <div class="confirm" id="confirm">
-      <p id="confirm-msg"></p>
-      <div class="row">
-        <button class="btn quiet" id="btn-goback">回供桌看看</button>
-        <button class="btn" id="btn-sure">心意已決</button>
-      </div>
     </div>`;
   document.getElementById("btn-back").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+  let asked = false;
   document.getElementById("btn-offer").addEventListener("click", ()=>{
-    if(viewed.size < 3){
-      document.getElementById("confirm-msg").textContent = `還有 ${3 - viewed.size} 籃沒看過。不先看看嗎？`;
-      document.getElementById("confirm").classList.add("on");
-      document.getElementById("btn-goback").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
-      document.getElementById("btn-sure").addEventListener("click", ()=>finish(b.id));
+    if(viewed.size < 3 && !asked){
+      asked = true;
+      const msg = document.getElementById("confirm-msg");
+      msg.textContent = `還有 ${3 - viewed.size} 籃沒看過。不先看看嗎？`;
+      msg.hidden = false;
+      document.getElementById("btn-offer").textContent = "心意已決";
     } else {
       finish(b.id);
     }
