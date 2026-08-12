@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>普渡好自然</title>
 <meta property="og:title" content="今年普渡，你選哪一籃？">
-<meta property="og:description" content="供桌上三籃大禮包，都蓋著紅布。掀開來看看——哪一籃，最對得起好兄弟。掃了再買 × 透明足跡。">
+<meta property="og:description" content="供桌上三籃大禮包，掀開來看看——哪一籃對環境比較友善，也更對得起好兄弟？掃了再買 × 透明足跡。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gcaa-org-tw.github.io/pudu2026/">
 <meta property="og:image" content="https://gcaa-org-tw.github.io/pudu2026/og.png">
@@ -154,7 +154,7 @@ a{color:var(--gold)}
 .item-lines b{color:var(--ink);font-weight:600}
 .item-main{flex:1;min-width:0}
 .item-wrap{display:flex;gap:12px;align-items:flex-start}
-.item-img{width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex-shrink:0;background:#F3E9D8}
+.item-img{width:96px;height:96px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex-shrink:0;background:#F3E9D8}
 .chips-btn{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 2px;background:none;border:none;color:inherit;padding:0;text-align:left}
 .chips-btn .hint{font-size:12px;color:var(--gold);border-bottom:1px dashed var(--gold)}
 .chips-btn[aria-expanded="true"] .hint{border-bottom-style:solid}
@@ -287,7 +287,7 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
 <section class="screen cover on" id="s-cover">
   <span class="eyebrow">透明足跡 × 掃了再買</span>
   <h1 class="cover-title">今年普渡<br><em>你選哪一籃</em></h1>
-  <p>供桌上三籃大禮包，都蓋著紅布。<br>掀開來看看，哪一籃，最對得起好兄弟。</p>
+  <p>供桌上三籃大禮包，掀開來看看，<br>哪一籃對環境比較友善，也更對得起好兄弟？</p>
   <span class="seal" aria-hidden="true">掃了再買</span>
   <button class="btn primary" id="btn-start">上　供　桌</button>
 </section>
@@ -397,7 +397,7 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
     <div class="rank-toggle" id="rank-toggle" role="group" aria-label="裁罰類型切換">
       <button data-view="all" aria-pressed="true">全體</button>
       <button data-view="w" aria-pressed="false">水污染</button>
-      <button data-view="a" aria-pressed="false">固定空污</button>
+      <button data-view="a" aria-pressed="false">空氣污染</button>
     </div>
     <div class="rank-total" id="rank-total"></div>
     <div class="legend" id="rank-legend"></div>
@@ -524,10 +524,11 @@ const DATA = [
 const viewed = new Set();
 const lifted = new Set();
 let current = null;
+let decided = false;
 
 function basketSVG(b){
   const peekItems = b.items.filter(it=>it.img).slice(0,3);
-  const CX=[63,100,137], ROT=[-9,2,8], Y=[46,40,47], W=34, H=44;
+  const CX=[56,100,144], ROT=[-9,2,8], Y=[34,27,35], W=44, H=56;
   const cards = peekItems.map((it,i)=>{
     const x=CX[i]-W/2, y=Y[i], id=`pk-${b.id}-${i}`;
     return `<g transform="rotate(${ROT[i]} ${CX[i]} ${y+H/2})">
@@ -627,18 +628,21 @@ function chipRow(w, a){
   return h;
 }
 
-function itemHTML(b, it, idx, prefix){
-  const stat = (it.water||it.air)
-    ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
-  const fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
+function itemHTML(b, it, idx, prefix, reveal){
   const ln = it.lines ? `<div class="item-lines"><b>這家公司還做</b>：${it.lines}</div>` : "";
   const im = it.img ? `<img class="item-img" src="${IMG}${it.img}" alt="${it.p}" loading="lazy">` : "";
-  const key = `${prefix}-${b.id}-${idx}`;
-  const chips = it.recs
-    ? `<button class="chips-btn" aria-expanded="false" data-recs="${key}">${chipRow(it.water, it.air)}<span class="hint">點開合併紀錄</span></button>
-       <div class="recs" id="recs-${key}" hidden>${it.recs.map(r=>
-         `<div class="rec"><span class="rec-d">${r[0]}</span><span class="rec-m">${r[1]}</span><span class="rec-f">${r[2]}</span></div>`).join("")}</div>`
-    : `<div class="chips">${chipRow(it.water, it.air)}</div>`;
+  let chips = "", stat = "", fact = "";
+  if(reveal){
+    stat = (it.water||it.air)
+      ? `<div class="item-stat">裁罰金額合計 <b>${it.money}</b></div>` : "";
+    fact = it.fact ? `<div class="item-fact">${it.fact}</div>` : "";
+    const key = `${prefix}-${b.id}-${idx}`;
+    chips = it.recs
+      ? `<button class="chips-btn" aria-expanded="false" data-recs="${key}">${chipRow(it.water, it.air)}<span class="hint">點開合併紀錄</span></button>
+         <div class="recs" id="recs-${key}" hidden>${it.recs.map(r=>
+           `<div class="rec"><span class="rec-d">${r[0]}</span><span class="rec-m">${r[1]}</span><span class="rec-f">${r[2]}</span></div>`).join("")}</div>`
+      : `<div class="chips">${chipRow(it.water, it.air)}</div>`;
+  }
   return `<div class="item">
     <div class="item-wrap">${im}<div class="item-main">
     <div class="item-top"><span class="item-name">${it.p}</span><span class="item-maker">製造商：${it.m}</span></div>
@@ -664,8 +668,8 @@ function openBasket(id){
   lifted.add(id);
   const b = DATA.find(x=>x.id===id);
   const p = document.getElementById("panel");
-  const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p")).join("");
-  const sum = b.count
+  const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p", decided)).join("");
+  const sum = !decided ? "" : b.count
     ? `<div class="basket-sum"><b>${b.count} 筆／${b.money}</b><span>籃內製造商 2024 年以來水污染與固定空污裁罰合計</span></div>`
     : `<div class="basket-sum"><b>0 筆</b><span>籃內五家製造商 2024 年以來皆無水污染與固定空污裁罰</span></div>`;
   p.innerHTML = `
@@ -687,7 +691,9 @@ function openBasket(id){
       </div>
     </div>`;
   bindChips(p);
-  document.getElementById("btn-back").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+  document.getElementById("btn-back").addEventListener("click", ()=>{
+    if(decided){ renderChoose(); } else { show("s-altar"); renderAltar(); }
+  });
   document.getElementById("btn-offer").addEventListener("click", ()=>{
     if(viewed.size < 3){
       document.getElementById("confirm-msg").textContent = `還有 ${3 - viewed.size} 籃沒看過。不先看看嗎？`;
@@ -703,13 +709,14 @@ function openBasket(id){
 }
 
 function renderChoose(){
+  decided = true;
   const p = document.getElementById("panel");
   const rows = DATA.map(b=>`
     <div class="item">
       <div class="item-top"><span class="item-name">${b.name}</span>
       <span class="item-maker">${b.count ? b.count + " 筆／" + b.money : "這兩類裁罰 0 筆"}</span></div>
       <div class="panel-actions" style="margin-top:8px;justify-content:flex-start">
-        <button class="btn quiet" data-view="${b.id}">再看一眼</button>
+        <button class="btn quiet" data-view="${b.id}">我要看違規</button>
         <button class="btn primary" data-pick="${b.id}">供這籃</button>
       </div>
     </div>`).join("");
@@ -767,11 +774,11 @@ const RANKS = [
 ];
 let chosenMakers = null;
 const RANK_SUBS = {
-  all:"遊戲內有裁罰紀錄的製造商，2024 年以來水污染與固定空污裁罰金額由高到低",
-  w:"遊戲內有裁罰紀錄的製造商，2024 年以來水污染裁罰金額由高到低",
-  a:"遊戲內有裁罰紀錄的製造商，2024 年以來固定空污裁罰金額由高到低"
+  all:"遊戲內有裁罰紀錄的製造商，2024 年至今水污與空污裁罰金額由高到低",
+  w:"遊戲內有裁罰紀錄的製造商，2024 年至今水污染裁罰金額由高到低",
+  a:"遊戲內有裁罰紀錄的製造商，2024 年至今空氣污染裁罰金額由高到低"
 };
-const ZERO_LABELS = {w:"同期間無水污染裁罰", a:"同期間無固定空污裁罰"};
+const ZERO_LABELS = {w:"同期間無水污染裁罰", a:"同期間無空氣污染裁罰"};
 
 function fmtWan(amt){
   return (amt/1e4).toLocaleString("zh-TW",{maximumFractionDigits:2}) + " 萬元";
@@ -790,11 +797,11 @@ function renderRanks(view){
   const totAmt = inView.reduce((s,x)=>s+x.amt,0);
   document.getElementById("rank-sub").textContent = RANK_SUBS[view];
   document.getElementById("rank-total").innerHTML =
-    `<span>${inView.length} 家有紀錄，合計</span><b>${totN} 筆／${fmtWan(totAmt)}</b>`;
+    `<span>共 ${inView.length} 家有違規紀錄</span><b>合計 ${totN} 筆／${fmtWan(totAmt)}</b>`;
   const lg = document.getElementById("rank-legend");
   lg.style.display = view==="all" ? "" : "none";
   lg.innerHTML = view==="all"
-    ? `<span><i style="background:var(--water)"></i>水污染</span><span><i style="background:var(--air)"></i>固定空污</span>` : "";
+    ? `<span><i style="background:var(--water)"></i>水污染</span><span><i style="background:var(--air)"></i>空氣污染</span>` : "";
   const maxAmt = Math.max(...inView.map(x=>x.amt));
   document.getElementById("bars").innerHTML = inView.map((x,i)=>{
     const w = x.amt / maxAmt * 62;
@@ -839,7 +846,7 @@ const VERDICTS = {
   b:{t:"這籃……小有心事",
      d:"經典品牌可能也要加油啊，四家製造商 2024 年以來共 7 筆裁罰。不算最重，但不代表完全乾淨。"},
   c:{t:"這籃，供得安心",
-     d:"五家製造商，2024 年以來水污染與固定空污裁罰通通是零。好兄弟收得安心，河川與空氣也是。"}
+     d:"五家製造商，2024 年至今沒有空污與水污違規紀錄。好兄弟收得安心，河川與空氣也是。"}
 };
 
 function finish(id){
@@ -875,7 +882,7 @@ function show(id){
 
 document.getElementById("btn-start").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
 document.getElementById("btn-replay").addEventListener("click", ()=>{
-  viewed.clear(); lifted.clear(); current = null;
+  viewed.clear(); lifted.clear(); current = null; decided = false;
   show("s-altar"); renderAltar();
   window.scrollTo({top:0});
 });
