@@ -116,7 +116,7 @@ th{background:var(--page);font-weight:600;color:var(--ink-2)}
 </div>
 </div>
 <script>
-const DATA = {"labels": ["0元", "1千以下", "1千–5千", "5千–1萬", "1–5萬", "5–10萬", "10–50萬", "50–100萬", "100–500萬", "500–1,000萬", "逾1,000萬"], "views": {"all": {"name": "全部裁罰", "n": 110827, "nTxt": "110,827", "median": "2,000 元", "max": "1.42 億元", "insight": "一半的罰單不超過 2,000 元——小額案件以車輛排氣與一般廢棄物為大宗", "bins": [179, 36388, 41446, 14496, 8212, 5997, 3443, 326, 314, 19, 7], "pct": ["0.2%", "32.8%", "37.4%", "13.1%", "7.4%", "5.4%", "3.1%", "0.3%", "0.3%", "0.0%", "0.0%"], "yMax": 48000, "ticks": [{"v": 0, "label": "0"}, {"v": 10000, "label": "1萬"}, {"v": 20000, "label": "2萬"}, {"v": 30000, "label": "3萬"}, {"v": 40000, "label": "4萬"}]}, "water": {"name": "水污染", "n": 6698, "nTxt": "6,698", "median": "3 萬元", "max": "2,000 萬元", "insight": "最常見的金額是 3 萬元；5 千元以下的罰單只有 10 張", "bins": [68, 0, 10, 1742, 2580, 1267, 772, 83, 155, 17, 4], "pct": ["1.0%", "0.0%", "0.1%", "26.0%", "38.5%", "18.9%", "11.5%", "1.2%", "2.3%", "0.3%", "0.1%"], "yMax": 3000, "ticks": [{"v": 0, "label": "0"}, {"v": 1000, "label": "1,000"}, {"v": 2000, "label": "2,000"}, {"v": 3000, "label": "3,000"}]}, "air": {"name": "固定空污", "n": 3512, "nTxt": "3,512", "median": "12 萬元", "max": "630 萬元", "insight": "最常見的金額是 10 萬元，共 1,474 張", "bins": [35, 0, 96, 5, 64, 1481, 1574, 148, 108, 1, 0], "pct": ["1.0%", "0.0%", "2.7%", "0.1%", "1.8%", "42.2%", "44.8%", "4.2%", "3.1%", "0.0%", "0.0%"], "yMax": 1900, "ticks": [{"v": 0, "label": "0"}, {"v": 500, "label": "500"}, {"v": 1000, "label": "1,000"}, {"v": 1500, "label": "1,500"}]}}};
+const DATA = {"labels": ["0元", "1千以下", "1千–5千", "5千–1萬", "1–5萬", "5–10萬", "10–50萬", "50–100萬", "100–500萬", "500–1,000萬", "逾1,000萬"], "views": {"all": {"name": "全部裁罰", "n": 110827, "nTxt": "110,827", "median": "2,000 元", "max": "1.42 億元", "insight": "一半的罰單不超過 2,000 元——小額案件以車輛排氣與一般廢棄物為大宗", "bins": [179, 36388, 41446, 14496, 8212, 5997, 3443, 326, 314, 19, 7], "pct": ["0.2%", "32.8%", "37.4%", "13.1%", "7.4%", "5.4%", "3.1%", "0.3%", "0.3%", "<0.1%", "<0.1%"], "yMax": 48000, "ticks": [{"v": 0, "label": "0"}, {"v": 10000, "label": "1萬"}, {"v": 20000, "label": "2萬"}, {"v": 30000, "label": "3萬"}, {"v": 40000, "label": "4萬"}]}, "water": {"name": "水污染", "n": 6698, "nTxt": "6,698", "median": "3 萬元", "max": "2,000 萬元", "insight": "最常見的金額是 3 萬元；5 千元以下的罰單只有 10 張", "bins": [68, 0, 10, 1742, 2580, 1267, 772, 83, 155, 17, 4], "pct": ["1.0%", "0.0%", "0.1%", "26.0%", "38.5%", "18.9%", "11.5%", "1.2%", "2.3%", "0.3%", "0.1%"], "yMax": 3000, "ticks": [{"v": 0, "label": "0"}, {"v": 1000, "label": "1,000"}, {"v": 2000, "label": "2,000"}, {"v": 3000, "label": "3,000"}]}, "air": {"name": "固定空污", "n": 3512, "nTxt": "3,512", "median": "12 萬元", "max": "630 萬元", "insight": "最常見的金額是 10 萬元，共 1,474 張", "bins": [35, 0, 96, 5, 64, 1481, 1574, 148, 108, 1, 0], "pct": ["1.0%", "0.0%", "2.7%", "0.1%", "1.8%", "42.2%", "44.8%", "4.2%", "3.1%", "<0.1%", "0.0%"], "yMax": 1900, "ticks": [{"v": 0, "label": "0"}, {"v": 500, "label": "500"}, {"v": 1000, "label": "1,000"}, {"v": 1500, "label": "1,500"}]}}};
 const ORDER = ['all', 'water', 'air'];
 let cur = 'all';
 const plot = document.getElementById('plot');
@@ -166,9 +166,14 @@ function showTip(band) {
   const br = band.getBoundingClientRect();
   const cr = plot.parentElement.getBoundingClientRect();
   const barH = Math.min(band.querySelector('.bar').getBoundingClientRect().height, br.height);
-  tip.style.left = (br.left - cr.left + br.width / 2) + 'px';
-  tip.style.top = (br.bottom - cr.top - barH - 30) + 'px';
   tip.classList.add('on');
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let x = br.left - cr.left + br.width / 2;
+  x = Math.min(Math.max(x, tw / 2 + 2), cr.width - tw / 2 - 2);
+  let y = br.bottom - cr.top - barH - 8;
+  y = Math.max(y, th + 2);
+  tip.style.left = x + 'px';
+  tip.style.top = y + 'px';
 }
 function hideTip() { tip.classList.remove('on'); }
 
