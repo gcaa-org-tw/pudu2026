@@ -216,7 +216,6 @@ a{color:var(--gold)}
 #recap .panel-head{margin-top:6px}
 .rank-row.mine{background:rgba(216,169,61,.09);border-radius:8px;margin:0 -12px;padding:10px 12px 6px;border-top-color:transparent}
 .rank-row.mine + .rank-row{border-top-color:transparent}
-.zero-block .zmine{background:rgba(216,169,61,.16);border-radius:4px;padding:0 4px}
 .store-badge img{display:block;height:48px;width:auto}
 .store-badge.gp img{height:66px;margin:-9px -1px}
 .cta .row{align-items:center}
@@ -228,8 +227,6 @@ a{color:var(--gold)}
 .rank-bar{display:flex;align-items:center;gap:2px;height:18px;margin:4px 0 2px}
 .rank-detail{font-size:13px;color:var(--muted);line-height:1.65}
 .rank-detail b{color:var(--ink);font-weight:600}
-.zero-block{border-top:1px solid var(--line);margin-top:12px;padding:10px 0;font-size:13.5px;color:var(--muted)}
-.zero-block b{color:var(--ink);font-weight:600}
 .bridge-head{margin:38px auto 16px}
 .clean-card{margin-top:26px;padding-bottom:18px}
 .clean-lead{font-size:15px;margin-bottom:10px}
@@ -394,7 +391,6 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
     <div class="rank-total" id="rank-total"></div>
     <div class="legend" id="rank-legend"></div>
     <div id="bars"></div>
-    <div class="zero-block" id="zero-block"></div>
   </div>
   <div class="chart clean-card">
     <p class="clean-lead">同期間這些品牌製造商無空、水污違規裁罰：</p>
@@ -728,7 +724,6 @@ const RANK_SUBS = {
   w:"遊戲內有裁罰紀錄的製造商，2024 年至今水污染裁罰金額由高到低",
   a:"遊戲內有裁罰紀錄的製造商，2024 年至今空氣污染裁罰金額由高到低"
 };
-const ZERO_LABELS = {w:"同期間無水污染裁罰", a:"同期間無空氣污染裁罰"};
 
 function fmtWan(amt){
   return (amt/1e4).toLocaleString("zh-TW",{maximumFractionDigits:2}) + " 萬元";
@@ -741,8 +736,6 @@ function renderRanks(view){
     return {r, n, amt};
   });
   const inView = rows.filter(x=>x.n>0).sort((x,y)=>y.amt-x.amt);
-  const zeroEntries = rows.filter(x=>x.n===0)
-    .map(x=>({label:`${x.r.ms}（${x.r.goods.split("、")[0]}）`, mine:chosenMakers && chosenMakers.has(x.r.m)}));
   const totN = inView.reduce((s,x)=>s+x.n,0);
   const totAmt = inView.reduce((s,x)=>s+x.amt,0);
   document.getElementById("rank-sub").textContent = RANK_SUBS[view];
@@ -774,14 +767,6 @@ function renderRanks(view){
       <div class="rank-detail">${x.r.d[view]}<br><b>關聯商品</b>：${x.r.goods}</div>
     </div>`;
   }).join("");
-  const zb = document.getElementById("zero-block");
-  if(view === "all" || zeroEntries.length === 0){
-    zb.style.display = "none";
-    zb.innerHTML = "";
-  } else {
-    zb.style.display = "";
-    zb.innerHTML = `<b>${ZERO_LABELS[view]}</b>：${zeroEntries.map(z=>z.mine ? `<span class="zmine">${z.label}</span>` : z.label).join("、")}`;
-  }
 }
 
 function setRankView(view){
