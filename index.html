@@ -378,7 +378,7 @@ details.tbl th,details.tbl td{border:1px solid var(--line);padding:4px 8px;text-
   <div class="panel" id="recap"></div>
   <div class="panel-head bridge-head">
     <span class="eyebrow">你選的這籃之外，供桌上還有更多</span>
-    <h2>供品品牌罰款前 15 大</h2>
+    <h2>供品品牌紀錄大公開</h2>
   </div>
   <div class="chart">
     <h3>製造商罰款排行</h3>
@@ -780,13 +780,12 @@ function renderRanks(view){
     const amt = view==="w" ? r.w.amt : view==="a" ? r.a.amt : r.w.amt + r.a.amt;
     return {r, n, amt};
   });
-  const ranked = rows.filter(x=>x.n>0).sort((x,y)=>y.amt-x.amt);
-  const inView = ranked.slice(0,15);
-  const totN = ranked.reduce((s,x)=>s+x.n,0);
-  const totAmt = ranked.reduce((s,x)=>s+x.amt,0);
+  const inView = rows.filter(x=>x.n>0).sort((x,y)=>y.amt-x.amt);
+  const totN = inView.reduce((s,x)=>s+x.n,0);
+  const totAmt = inView.reduce((s,x)=>s+x.amt,0);
   document.getElementById("rank-sub").textContent = RANK_SUBS[view];
   document.getElementById("rank-total").innerHTML =
-    `<span>共 ${ranked.length} 家有違規紀錄${ranked.length > inView.length ? "，列金額前 15 大" : ""}</span><b>合計 ${totN} 筆／${fmtWan(totAmt)}</b>`;
+    `<span>共 ${inView.length} 家有違規紀錄</span><b>合計 ${totN} 筆／${fmtWan(totAmt)}</b>`;
   const lg = document.getElementById("rank-legend");
   lg.style.display = view==="all" ? "" : "none";
   lg.innerHTML = view==="all"
