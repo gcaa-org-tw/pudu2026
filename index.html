@@ -16,6 +16,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Iansui&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75DVWF76ND"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75DVWF76ND');
+</script>
 <style>
 :root{
   --night:#241811; --panel:#2B1D16; --card:#33241A; --line:#4A3625;
@@ -622,6 +629,7 @@ function renderAltar(){
     el.addEventListener("click", ()=>{
       if(!lifted.has(b.id)){
         lifted.add(b.id);
+        gtag("event", "lift_basket", {basket_name: b.name});
         el.classList.add("opened");
         el.setAttribute("aria-label", b.name + "（已掀布，點一下看籃內供品）");
       } else {
@@ -685,6 +693,7 @@ function openBasket(id){
   viewed.add(id);
   lifted.add(id);
   const b = DATA.find(x=>x.id===id);
+  gtag("event", "open_basket", {basket_name: b.name});
   const p = document.getElementById("panel");
   const items = b.items.map((it,idx)=>itemHTML(b, it, idx, "p", false)).join("");
   p.innerHTML = `
@@ -875,6 +884,7 @@ const VERDICTS = {
 function finish(id){
   const v = VERDICTS[id];
   const b = DATA.find(x=>x.id===id);
+  gtag("event", "offer_basket", {basket_name: b.name});
   document.getElementById("verdict").innerHTML = `
     <span class="eyebrow">你供上了「${b.name}」</span>
     <h2>${v.t}</h2><p>${v.d}</p>`;
@@ -906,7 +916,9 @@ function show(id){
   document.getElementById(id).classList.add("on");
 }
 
-document.getElementById("btn-start").addEventListener("click", ()=>{ show("s-altar"); renderAltar(); });
+document.getElementById("btn-start").addEventListener("click", ()=>{ gtag("event", "game_start"); show("s-altar"); renderAltar(); });
+document.querySelectorAll(".store-badge").forEach(a=>a.addEventListener("click", ()=>
+  gtag("event", "badge_click", {store: a.classList.contains("gp") ? "google_play" : "app_store"})));
 document.getElementById("btn-replay").addEventListener("click", ()=>{
   viewed.clear(); lifted.clear(); current = null;
   show("s-altar"); renderAltar();
